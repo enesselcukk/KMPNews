@@ -35,3 +35,5 @@ plugins {
 include(":androidApp")
 include(":desktopApp")
 include(":shared")
+include(":core:model")
+include(":core:network")

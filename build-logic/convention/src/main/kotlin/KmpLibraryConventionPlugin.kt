@@ -11,15 +11,8 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
         }
 
         extensions.configure<KotlinMultiplatformExtension> {
-            listOf(
-                iosArm64(),
-                iosSimulatorArm64(),
-            ).forEach { iosTarget ->
-                iosTarget.binaries.framework {
-                    baseName = "Shared"
-                    isStatic = true
-                }
-            }
+            iosArm64()
+            iosSimulatorArm64()
         }
     }
 }
