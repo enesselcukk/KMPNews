@@ -32,8 +32,15 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":androidApp")
-include(":desktopApp")
-include(":shared")
+include(":app:androidApp")
+include(":app:desktopApp")
+include(":app:iosApp")
+include(":app:shared")
+include(":app:ui-components")
 include(":core:model")
 include(":core:network")
+include(":core:database")
+include(":core:datastore")
+include(":core:navigation")
+include(":feature:news")
+include(":feature:newsdetail")

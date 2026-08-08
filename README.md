@@ -1,35 +1,29 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop (JVM).
+This is a Kotlin Multiplatform project targeting Android, iOS, and Desktop (JVM).
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+### Project structure
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+```
+app/
+  androidApp/     Android entry point
+  desktopApp/     Desktop (JVM) entry point
+  iosApp/         iOS entry point (Xcode + Kotlin bridge)
+  shared/         Shared Compose UI + Koin DI (Android, Desktop, common)
+  ui-components/  Design system (theme, components)
+  screenshot/     App screenshots
+core/             Data, network, database, navigation
+feature/          Feature screens and ViewModels
+```
 
 ### Running the apps
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
-
-- Android app: `./gradlew :androidApp:assembleDebug`
-- Desktop app:
-  - Hot reload: `./gradlew :desktopApp:hotRun --auto`
-  - Standard run: `./gradlew :desktopApp:run`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+- Android: `./gradlew :app:androidApp:assembleDebug`
+- Desktop:
+  - Hot reload: `./gradlew :app:desktopApp:hotRun --auto`
+  - Standard run: `./gradlew :app:desktopApp:run`
+- iOS: open `app/iosApp` in Xcode and run from there.
 
 ### Running tests
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
-
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- Desktop tests: `./gradlew :shared:jvmTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+- Android tests: `./gradlew :app:shared:testAndroidHostTest`
+- Desktop tests: `./gradlew :app:shared:jvmTest`
+- iOS tests: `./gradlew :app:shared:iosSimulatorArm64Test`
