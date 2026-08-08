@@ -1,6 +1,7 @@
 rootProject.name = "KMPNews"
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             mavenContent {
