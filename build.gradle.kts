@@ -10,4 +10,6 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room3) apply false
+    alias(libs.plugins.androidLint) apply false
+    alias(libs.plugins.androidDynamicFeature) apply false
 }

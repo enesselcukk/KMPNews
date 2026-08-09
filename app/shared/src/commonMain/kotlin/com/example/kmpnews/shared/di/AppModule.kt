@@ -2,24 +2,27 @@ package com.example.kmpnews.shared.di
 
 import com.example.kmpnews.core.datastore.DefaultUserSettingsRepository
 import com.example.kmpnews.core.datastore.UserSettingsRepository
-import com.example.kmpnews.core.model.ArticleRepository
-import com.example.kmpnews.core.network.createDefaultHttpClient
-import com.example.kmpnews.feature.news.NewsViewModel
-import com.example.kmpnews.feature.newsdetail.NewsDetailViewModel
-import io.ktor.client.HttpClient
+import com.example.kmpnews.core.domain.repository.ArticleRepository
+import com.example.kmpnews.feature.detail.domain.GetArticleDetailUseCase
+import com.example.kmpnews.feature.detail.presentation.DetailViewModel
+import com.example.kmpnews.feature.home.data.HomeArticleRepository
+import com.example.kmpnews.feature.home.domain.repository.HomeRepository
+import com.example.kmpnews.feature.home.domain.usecase.GetHomeArticlesUseCase
+import com.example.kmpnews.feature.home.presentation.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
     single<UserSettingsRepository> { DefaultUserSettingsRepository() }
-    single<ArticleRepository> { DefaultArticleRepository() }
-    single<HttpClient> { createDefaultHttpClient() }
 
-    viewModel { NewsViewModel(get()) }
+    factory { GetHomeArticlesUseCase(get()) }
+    factory { GetArticleDetailUseCase(get()) }
+
+    viewModel { HomeViewModel(get()) }
     viewModel { parameters ->
-        NewsDetailViewModel(
+        DetailViewModel(
             articleId = parameters.get(),
-            articleRepository = get(),
+            getArticleDetailUseCase = get(),
         )
     }
 }

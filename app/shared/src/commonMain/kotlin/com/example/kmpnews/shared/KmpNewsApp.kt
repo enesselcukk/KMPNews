@@ -3,10 +3,10 @@ package com.example.kmpnews.shared
 import androidx.compose.runtime.Composable
 import com.example.kmpnews.core.designsystem.theme.KmpNewsTheme
 import com.example.kmpnews.core.navigation.KmpNewsNavHost
-import com.example.kmpnews.feature.news.NewsScreen
-import com.example.kmpnews.feature.news.NewsViewModel
-import com.example.kmpnews.feature.newsdetail.NewsDetailScreen
-import com.example.kmpnews.feature.newsdetail.NewsDetailViewModel
+import com.example.kmpnews.feature.detail.presentation.DetailScreen
+import com.example.kmpnews.feature.detail.presentation.DetailViewModel
+import com.example.kmpnews.feature.home.presentation.HomeScreen
+import com.example.kmpnews.feature.home.presentation.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -15,16 +15,15 @@ fun KmpNewsApp() {
     KmpNewsTheme {
         KmpNewsNavHost(
             newsListContent = { onArticleClick ->
-                NewsScreen(
+                HomeScreen(
                     onArticleClick = onArticleClick,
-                    viewModel = koinViewModel<NewsViewModel>(),
+                    viewModel = koinViewModel<HomeViewModel>(),
                 )
             },
             newsDetailContent = { articleId, onBackClick ->
-                NewsDetailScreen(
-                    articleId = articleId,
+                DetailScreen(
                     onBackClick = onBackClick,
-                    viewModel = koinViewModel<NewsDetailViewModel> {
+                    viewModel = koinViewModel<DetailViewModel> {
                         parametersOf(articleId)
                     },
                 )
