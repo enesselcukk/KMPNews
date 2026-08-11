@@ -14,15 +14,15 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core:data"))
+            implementation(project(":core:datastore"))
             implementation(project(":core:domain"))
             implementation(project(":core:model"))
+            implementation(project(":core:network"))
             implementation(project(":feature:home:domain"))
 
             implementation(libs.kotlinx.coroutines.core)
-
-            implementation(libs.ktor.client.okhttp)
-
-
+            implementation(libs.ktor.client.core)
+            api(libs.koin.core)
         }
     }
 }

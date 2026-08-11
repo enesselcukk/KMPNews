@@ -23,7 +23,6 @@ fun DetailScreen(
     viewModel: DetailViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier,

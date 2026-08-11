@@ -39,20 +39,44 @@ fun HomeScreen(
             )
         },
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            items(uiState.articles, key = { it.id }) { article ->
-                NewsCard(
-                    title = article.title,
-                    description = article.description,
-                    sourceName = article.source.name,
-                    onClick = { onArticleClick(article.id) },
+        when {
+            uiState.isLoading && uiState.articles.isEmpty() -> {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp),
+                    text = "Loading news...",
                 )
+            }
+
+            uiState.errorMessage != null && uiState.articles.isEmpty() -> {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp),
+                    text = uiState.errorMessage.orEmpty(),
+                )
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(uiState.articles, key = { it.id }) { article ->
+                        NewsCard(
+                            title = article.title,
+                            description = article.description,
+                            sourceName = article.source.name,
+                            onClick = { onArticleClick(article.id) },
+                        )
+                    }
+                }
             }
         }
     }

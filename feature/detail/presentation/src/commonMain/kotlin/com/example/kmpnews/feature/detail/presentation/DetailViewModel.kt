@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class DetailViewModel(
     private val articleId: String,
-    private val getArticleDetailUseCase: GetArticleDetailUseCase,
 ) : ViewModel() {
     private val uiState = MutableStateFlow(
         DetailContract.UiState(article = getArticleDetailUseCase(articleId)),
