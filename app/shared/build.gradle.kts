@@ -23,6 +23,14 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiTooling)
             implementation(libs.koin.android)
+            implementation(libs.ktor.client.okhttp)
+        }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
+            implementation(libs.kotlinx.coroutinesSwing)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
             implementation(project(":app:ui-components"))
@@ -48,6 +56,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
             implementation(libs.navigation.compose)
         }
     }

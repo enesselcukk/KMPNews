@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,13 +36,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.SubcomposeAsyncImage
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 import org.koin.compose.viewmodel.koinViewModel
+
+private val HeadlineCardMaxWidth = 380.dp
+private const val HeadlineCardAspectRatio = 16f / 9f
+private val HeadlineOverlayHeight = 92.dp
 
 @Composable
 fun HomeScreen(
@@ -49,47 +56,41 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        modifier = Modifier,
-        containerColor = HomeScreenColors.Background,
-        bottomBar = {
-            when (val state = uiState) {
-                is HomeUiState.Success -> {
-                    HomeBottomBar(
-                        selectedIndex = state.selectedBottomNav,
-                        onItemSelected = viewModel::onBottomNavSelected,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(HomeScreenColors.Background),
+    ) {
+        HomeTopBar()
+        when (val state = uiState) {
+            HomeUiState.Loading -> LoadingIndicator(modifier = Modifier.weight(1f))
+            is HomeUiState.Error -> HomeMessage(
+                text = state.message,
+                modifier = Modifier.weight(1f),
+            )
+            is HomeUiState.Success -> {
+                HomeCategoryTabs(
+                    categories = state.categories,
+                    selectedCategory = state.selectedCategory,
+                    onCategorySelected = viewModel::onCategorySelected,
+                )
+                if (state.headlines.isEmpty() && state.feed.isEmpty()) {
+                    HomeMessage(
+                        text = "Gösterilecek haber bulunamadı.",
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    HomeContent(
+                        headlines = state.headlines,
+                        feed = state.feed,
+                        actions = viewModel,
+                        modifier = Modifier.weight(1f),
                     )
                 }
-
-                else -> Unit
-            }
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
-            HomeTopBar()
-            when (val state = uiState) {
-                HomeUiState.Loading -> LoadingIndicator()
-                is HomeUiState.Error -> HomeMessage(text = state.message)
-                is HomeUiState.Success -> {
-                    HomeCategoryTabs(
-                        categories = state.categories,
-                        selectedCategory = state.selectedCategory,
-                        onCategorySelected = viewModel::onCategorySelected,
-                    )
-                    if (state.headlines.isEmpty() && state.feed.isEmpty()) {
-                        HomeMessage(text = "Gösterilecek haber bulunamadı.")
-                    } else {
-                        HomeContent(
-                            headlines = state.headlines,
-                            feed = state.feed,
-                            actions = viewModel,
-                        )
-                    }
-                }
+                HomeBottomBar(
+                    selectedIndex = state.selectedBottomNav,
+                    onItemSelected = viewModel::onBottomNavSelected,
+                )
             }
         }
     }
@@ -203,13 +204,14 @@ private fun HomeContent(
     headlines: List<NewsHomeArticleDto>,
     feed: List<NewsHomeArticleDto>,
     actions: HomeActions,
+    modifier: Modifier = Modifier,
 ) {
     if (headlines.isEmpty() && feed.isEmpty()) return
 
     val pagerState = rememberPagerState(pageCount = { headlines.size.coerceAtLeast(1) })
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         contentPadding = PaddingValues(bottom = 16.dp),
     ) {
         item {
@@ -221,10 +223,19 @@ private fun HomeContent(
                     pageSpacing = 12.dp,
                 ) { page ->
                     val article = headlines[page]
-                    HeadlineCard(
-                        article = article,
-                        onClick = { actions.navigateToDetail(article.url.orEmpty())},
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        HeadlineCard(
+                            article = article,
+                            onClick = { actions.navigateToDetail(article.url.orEmpty()) },
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .widthIn(max = HeadlineCardMaxWidth)
+                                .aspectRatio(HeadlineCardAspectRatio),
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -283,32 +294,30 @@ private fun HeadlineCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val gradient = remember(article.title) { headlineGradient(article.title.orEmpty()) }
-
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(220.dp)
-            .clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(gradient),
+            NewsArticleImage(
+                imageUrl = article.urlToImage,
+                contentDescription = article.title,
+                modifier = Modifier.fillMaxSize(),
+                alignment = Alignment.TopCenter,
             )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(HeadlineOverlayHeight)
                     .align(Alignment.BottomCenter)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f)),
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.85f)),
                         ),
                     )
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                contentAlignment = Alignment.BottomStart,
             ) {
                 Column {
                     Text(
@@ -316,14 +325,16 @@ private fun HeadlineCard(
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        maxLines = 3,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = article.description ?: article.publishedAt.orEmpty(),
                         color = Color.White.copy(alpha = 0.85f),
                         fontSize = 11.sp,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -350,11 +361,12 @@ private fun FeedArticleCard(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
+            NewsArticleImage(
+                imageUrl = article.urlToImage,
+                contentDescription = article.title,
                 modifier = Modifier
                     .size(72.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(headlineGradient(article.title.orEmpty())),
+                    .clip(RoundedCornerShape(10.dp)),
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -420,15 +432,58 @@ private fun HomeBottomBar(
 }
 
 @Composable
-private fun HomeMessage(text: String) {
+private fun HomeMessage(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(24.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(text = text, color = HomeScreenColors.TextSecondary)
     }
+}
+
+@Composable
+private fun NewsArticleImage(
+    imageUrl: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+    alignment: Alignment = Alignment.Center,
+) {
+    val placeholderGradient = remember(contentDescription) {
+        headlineGradient(contentDescription.orEmpty())
+    }
+
+    if (imageUrl.isNullOrBlank()) {
+        Box(modifier = modifier.background(placeholderGradient))
+        return
+    }
+
+    SubcomposeAsyncImage(
+        model = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = contentScale,
+        alignment = alignment,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(placeholderGradient),
+            )
+        },
+        error = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(placeholderGradient),
+            )
+        },
+    )
 }
 
 private fun headlineGradient(seed: String): Brush {

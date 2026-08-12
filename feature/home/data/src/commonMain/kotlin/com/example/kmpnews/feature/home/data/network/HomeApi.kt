@@ -11,7 +11,8 @@ class HomeApi(
 ) {
     suspend fun getNews(): HttpResponse =
         httpClient.get("everything") {
-            parameter("q", "bitcoin")
+            parameter("q", "spor")
+            parameter("language", "tr")
             parameter("page", "1")
             parameter("apiKey", API_KEY)
         }
