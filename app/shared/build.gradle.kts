@@ -34,6 +34,7 @@ kotlin {
             implementation(project(":core:datastore"))
             implementation(project(":feature:home:data"))
             implementation(project(":feature:home:domain"))
+            implementation(project(":feature:home:contract"))
             implementation(project(":feature:home:presentation"))
             implementation(project(":feature:detail:domain"))
             implementation(project(":feature:detail:presentation"))
@@ -48,6 +49,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
         }
     }
 }

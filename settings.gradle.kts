@@ -52,3 +52,5 @@ include(":feature:detail:contract")
 include(":feature:detail:domain")
 include(":feature:detail:data")
 include(":feature:detail:presentation")
+
+include(":core:presentation")

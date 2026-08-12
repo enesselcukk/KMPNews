@@ -24,7 +24,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core:domain"))
+            implementation(project(":core:presentation"))
+            implementation(project(":core:navigation"))
             implementation(project(":feature:home:contract"))
+            implementation(project(":feature:detail:contract"))
             implementation(project(":feature:home:domain"))
             implementation(project(":app:ui-components"))
             implementation(libs.compose.runtime)
@@ -34,6 +37,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
         }
     }
 }

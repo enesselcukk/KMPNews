@@ -1,5 +1,6 @@
 plugins {
     id("kmpnews.library.kmp")
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -14,6 +15,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":core:model"))
+            api(project(":core:navigation"))
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
