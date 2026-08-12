@@ -59,7 +59,7 @@ class HomeViewModel(
                         is RestResult.Error -> {
                             result.result?.let { toSuccess(it) }
                                 ?: HomeUiState.Error(
-                                    result.error.message ?: "Bir hata oluştu",
+                                    message = result.error.message,
                                 )
                         }
                     }

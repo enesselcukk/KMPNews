@@ -15,16 +15,9 @@ sealed interface HomeUiState {
         val selectedBottomNav: Int = 0,
     ) : HomeUiState
 
-    data class Error(val message: String) : HomeUiState
+    data class Error(val message: String? = null) : HomeUiState
 
     companion object {
-        val defaultCategories = listOf(
-            "TÜMÜ",
-            "GÜNDEM",
-            "TEKNOLOJİ",
-            "EKONOMİ",
-            "SPOR",
-            "DÜNYA",
-        )
+        val defaultCategories = HomeCategories.ids
     }
 }

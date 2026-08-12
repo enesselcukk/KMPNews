@@ -2,6 +2,11 @@ plugins {
     id("kmpnews.library.compose")
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.example.kmpnews.feature.home.presentation.generated.resources"
+}
+
 kotlin {
     jvm()
 
@@ -9,6 +14,9 @@ kotlin {
         namespace = "com.example.kmpnews.feature.home.presentation"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources {
+            enable = true
+        }
     }
 
     listOf(
