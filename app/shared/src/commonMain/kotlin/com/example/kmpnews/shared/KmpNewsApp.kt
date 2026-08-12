@@ -8,16 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.kmpnews.core.designsystem.theme.KmpNewsTheme
-import com.example.kmpnews.core.navigation.KmpNewsNavHost
 import com.example.kmpnews.core.navigation.NavGraphProvider
 import com.example.kmpnews.core.navigation.NavigationManager
-import com.example.kmpnews.feature.detail.presentation.DetailScreen
-import com.example.kmpnews.feature.detail.presentation.DetailViewModel
 import com.example.kmpnews.feature.home.contract.HomeScreenDestination
-import com.example.kmpnews.feature.home.presentation.ui.HomeScreen
-import com.example.kmpnews.feature.home.presentation.ui.HomeViewModel
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import org.koin.mp.KoinPlatform.getKoin
 
 @Composable

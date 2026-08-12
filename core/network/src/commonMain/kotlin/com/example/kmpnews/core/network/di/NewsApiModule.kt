@@ -8,7 +8,6 @@ import org.koin.dsl.module
 val newsApiModule = module {
     single<HttpClient> {
         NewsApiHttpClientFactory.create(
-            baseUrl = NewsApiConfig.BASEURL,
             enableLogging = true)
     }
 }

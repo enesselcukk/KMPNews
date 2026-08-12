@@ -1,7 +1,5 @@
 package com.example.kmpnews.core.navigation
 
-import com.spaceex.core.navigation.NavigationCommand
-import com.spaceex.core.navigation.NavigationManager
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

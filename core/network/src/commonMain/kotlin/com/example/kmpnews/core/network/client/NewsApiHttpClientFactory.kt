@@ -1,6 +1,8 @@
 package com.example.kmpnews.core.network.client
 
-import com.example.kmpnews.core.network.engine.NewsHttpEngineProvider
+import com.example.kmpnews.core.network.config.NewsApiConfig.BASE_PATH
+import com.example.kmpnews.core.network.config.NewsApiConfig.HOST
+import com.example.kmpnews.core.network.engine.getProvide
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -9,7 +11,9 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
+import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -18,10 +22,9 @@ private const val TIMEOUT_MILLIS = 15_000L
 object NewsApiHttpClientFactory {
 
     fun create(
-        baseUrl: String,
         enableLogging: Boolean = true,
     ): HttpClient {
-        return HttpClient(NewsHttpEngineProvider.provide()) {
+        return HttpClient(getProvide()) {
             install(ContentNegotiation) {
                 json(
                     Json {
@@ -50,7 +53,11 @@ object NewsApiHttpClientFactory {
             }
 
             defaultRequest {
-                url(baseUrl)
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = HOST
+                    encodedPath = BASE_PATH
+                }
                 contentType(ContentType.Application.Json)
             }
         }

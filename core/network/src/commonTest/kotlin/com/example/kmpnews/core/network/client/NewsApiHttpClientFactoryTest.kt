@@ -7,7 +7,7 @@ class NewsApiHttpClientFactoryTest {
     @Test
     fun create_isNotNull() {
         val client = NewsApiHttpClientFactory.create(
-            baseUrl = "example.com",
+            baseUrl = "https://example.com/v2/",
             enableLogging = false,
         )
         assertNotNull(client)

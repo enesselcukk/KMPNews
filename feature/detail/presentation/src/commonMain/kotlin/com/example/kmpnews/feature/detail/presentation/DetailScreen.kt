@@ -19,68 +19,8 @@ import com.example.kmpnews.core.designsystem.component.LoadingIndicator
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    onBackClick: () -> Unit,
     viewModel: DetailViewModel,
     modifier: Modifier = Modifier,
 ) {
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Article") },
-                navigationIcon = {
-                    TextButton(onClick = onBackClick) {
-                        Text(text = "Back")
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        when (val article = uiState.article) {
-            null -> LoadingIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-            )
-            else -> Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp),
-            ) {
-                Text(
-                    text = article.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-                Text(
-                    text = article.source.name,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-                article.author?.let { author ->
-                    Text(
-                        text = author,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(top = 4.dp),
-                    )
-                }
-                article.description?.let { description ->
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(top = 16.dp),
-                    )
-                }
-                article.content?.let { content ->
-                    Text(
-                        text = content,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(top = 12.dp),
-                    )
-                }
-            }
-        }
-    }
 }

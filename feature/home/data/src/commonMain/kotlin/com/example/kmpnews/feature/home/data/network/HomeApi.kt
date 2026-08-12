@@ -1,5 +1,6 @@
 package com.example.kmpnews.feature.home.data.network
 
+import com.example.kmpnews.core.network.config.NewsApiConfig.API_KEY
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -12,6 +13,6 @@ class HomeApi(
         httpClient.get("everything") {
             parameter("q", "bitcoin")
             parameter("page", "1")
-            parameter("apiKey", "1bb2021523d6486b8aef4c9e14aeb6a4")
+            parameter("apiKey", API_KEY)
         }
 }
