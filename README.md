@@ -2,19 +2,18 @@
 
 A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting **Android**, **iOS**, and **Desktop (JVM)** from a single shared codebase.
 
-Live news data is fetched from [News API](https://newsapi.org/); the UI is built with **Jetpack Compose Multiplatform**.
-
 ---
 
 ## Screenshots
 
 ### Android
 
+<img width="120" height="262" alt="Screenshot_20260813_133010" src="https://github.com/user-attachments/assets/d7fadfbb-edd0-4942-8433-083ad97c2b5a" />
 
 
 ### iOS
 
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-08-13 at 13 14 30" src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" />
+<img width="120" height="262" alt="Simulator Screenshot - iPhone 17 - 2026-08-13 at 13 14 30" src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" />
 
 
 ### Desktop
