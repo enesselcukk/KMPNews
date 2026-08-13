@@ -342,7 +342,7 @@ private fun HeadlineCard(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             lineHeight = 20.sp,
-                            maxLines = 2,
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -351,7 +351,7 @@ private fun HeadlineCard(
                             color = SdhOnMediaOverlayMuted,
                             fontSize = 12.sp,
                             lineHeight = 16.sp,
-                            maxLines = 3,
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
