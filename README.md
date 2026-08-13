@@ -10,15 +10,17 @@ Live news data is fetched from [News API](https://newsapi.org/); the UI is built
 
 ### Android
 
-![Android Home Screen](docs/screenshots/android/home.png)
+
 
 ### iOS
 
-![iOS Home Screen](docs/screenshots/ios/home.png)
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-08-13 at 13 14 30" src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" />
+
 
 ### Desktop
 
-![Desktop Home Screen](docs/screenshots/desktop/home.png)
+<img width="1188" height="748" alt="Ekran Resmi 2026-08-13 13 15 51" src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" />
+
 
 > Add your images under `docs/screenshots/android/`, `docs/screenshots/ios/`, and `docs/screenshots/desktop/`. File names should match the paths above (`home.png`).
 
@@ -182,20 +184,6 @@ Build via Gradle:
 
 ---
 
-## Testing
-
-```bash
-# Android unit tests
-./gradlew :app:shared:testAndroidHostTest
-
-# Desktop (JVM) tests
-./gradlew :app:shared:jvmTest
-
-# iOS simulator tests
-./gradlew :app:shared:iosSimulatorArm64Test
-```
-
----
 
 ## Localization
 
@@ -215,26 +203,3 @@ Text(stringResource(Res.string.home_headlines))
 
 The system locale automatically selects the matching `values-*` folder.
 
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## License
-
-This project is for educational / portfolio purposes. License to be added.
-
----
-
-## Contact
-
-**Enes** — project author
-
-Repository: `https://github.com/<username>/KMPNews`
