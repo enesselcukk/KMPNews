@@ -20,9 +20,6 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 
 <img width="1188" height="748" alt="Ekran Resmi 2026-08-13 13 15 51" src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" />
 
-
-> Add your images under `docs/screenshots/android/`, `docs/screenshots/ios/`, and `docs/screenshots/desktop/`. File names should match the paths above (`home.png`).
-
 ---
 
 ## Features
