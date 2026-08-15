@@ -5,5 +5,7 @@ import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
-    fun getHomeNews(): Flow<RestResult<List<NewsHomeArticleDto>>>
+    fun getHomeNews(category: String): Flow<RestResult<List<NewsHomeArticleDto>>>
+
+    fun findCachedArticleByUrl(url: String): NewsHomeArticleDto?
 }

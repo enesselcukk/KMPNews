@@ -13,10 +13,11 @@
     <string name="home_nav_explore">KEŞFET</string>
     <string name="home_nav_videos">VİDEOLAR</string>
     <string name="home_nav_profile">PROFİL</string>
-    <string name="category_all">TÜMÜ</string>
-    <string name="category_news">GÜNDEM</string>
-    <string name="category_technology">TEKNOLOJİ</string>
-    <string name="category_economy">EKONOMİ</string>
+    <string name="category_general">GÜNDEM</string>
+    <string name="category_business">İŞ</string>
+    <string name="category_entertainment">EĞLENCE</string>
+    <string name="category_health">SAĞLIK</string>
+    <string name="category_science">BİLİM</string>
     <string name="category_sports">SPOR</string>
-    <string name="category_world">DÜNYA</string>
+    <string name="category_technology">TEKNOLOJİ</string>
 </resources>

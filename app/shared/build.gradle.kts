@@ -45,6 +45,7 @@ kotlin {
             implementation(project(":feature:home:contract"))
             implementation(project(":feature:home:presentation"))
             implementation(project(":feature:detail:domain"))
+            implementation(project(":feature:detail:data"))
             implementation(project(":feature:detail:presentation"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)

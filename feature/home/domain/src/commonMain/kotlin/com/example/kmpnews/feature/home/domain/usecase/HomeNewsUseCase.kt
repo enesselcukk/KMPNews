@@ -8,5 +8,6 @@ import kotlinx.coroutines.flow.Flow
 class HomeNewsUseCase(
     private val homeRepository: HomeRepository,
 ) {
-    operator fun invoke(): Flow<RestResult<List<NewsHomeArticleDto>>> = homeRepository.getHomeNews()
+    operator fun invoke(category: String): Flow<RestResult<List<NewsHomeArticleDto>>> =
+        homeRepository.getHomeNews(category)
 }

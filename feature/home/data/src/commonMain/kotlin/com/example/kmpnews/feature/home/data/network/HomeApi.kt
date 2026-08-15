@@ -9,11 +9,15 @@ import io.ktor.client.statement.HttpResponse
 class HomeApi(
     private val httpClient: HttpClient,
 ) {
-    suspend fun getNews(): HttpResponse =
-        httpClient.get("everything") {
-            parameter("q", "spor")
-            parameter("language", "en")
+    suspend fun getTopHeadlines(category: String): HttpResponse =
+        httpClient.get("top-headlines") {
+            parameter("category", category)
+            parameter("pageSize", MAX_PAGE_SIZE)
             parameter("page", "1")
             parameter("apiKey", API_KEY)
         }
+
+    private companion object {
+        const val MAX_PAGE_SIZE = "100"
+    }
 }

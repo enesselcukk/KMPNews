@@ -14,6 +14,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core:domain"))
+            implementation(project(":core:model"))
+            implementation(libs.kotlinx.coroutines.core)
+            api(libs.koin.core)
         }
     }
 }

@@ -13,7 +13,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":core:data"))
+            implementation(project(":core:domain"))
             implementation(project(":core:model"))
+            implementation(project(":feature:detail:domain"))
+            implementation(project(":feature:home:domain"))
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
         }
     }
 }

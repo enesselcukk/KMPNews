@@ -2,6 +2,11 @@ plugins {
     id("kmpnews.library.compose")
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.example.kmpnews.feature.detail.presentation.generated.resources"
+}
+
 kotlin {
     jvm()
 
@@ -9,6 +14,9 @@ kotlin {
         namespace = "com.example.kmpnews.feature.detail.presentation"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources {
+            enable = true
+        }
     }
 
     listOf(
@@ -23,6 +31,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":core:domain"))
+            implementation(project(":core:presentation"))
             implementation(project(":core:navigation"))
             implementation(project(":feature:detail:contract"))
             implementation(project(":feature:detail:domain"))
@@ -38,6 +48,7 @@ kotlin {
             implementation(libs.koin.core.viewmodel)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.coil.compose)
         }
     }
 }

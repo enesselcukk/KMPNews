@@ -1,17 +1,19 @@
 package com.example.kmpnews.feature.home.presentation.ui
 
 import androidx.compose.runtime.Composable
+import com.example.kmpnews.feature.home.domain.model.NewsHeadlineCategory
 import com.example.kmpnews.feature.home.presentation.generated.resources.Res
 import com.example.kmpnews.feature.home.presentation.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun homeCategoryLabel(categoryId: String): String = when (categoryId) {
-    HomeCategories.ALL -> stringResource(Res.string.category_all)
-    HomeCategories.NEWS -> stringResource(Res.string.category_news)
-    HomeCategories.TECHNOLOGY -> stringResource(Res.string.category_technology)
-    HomeCategories.ECONOMY -> stringResource(Res.string.category_economy)
-    HomeCategories.SPORTS -> stringResource(Res.string.category_sports)
-    HomeCategories.WORLD -> stringResource(Res.string.category_world)
+    NewsHeadlineCategory.GENERAL -> stringResource(Res.string.category_general)
+    NewsHeadlineCategory.BUSINESS -> stringResource(Res.string.category_business)
+    NewsHeadlineCategory.ENTERTAINMENT -> stringResource(Res.string.category_entertainment)
+    NewsHeadlineCategory.HEALTH -> stringResource(Res.string.category_health)
+    NewsHeadlineCategory.SCIENCE -> stringResource(Res.string.category_science)
+    NewsHeadlineCategory.SPORTS -> stringResource(Res.string.category_sports)
+    NewsHeadlineCategory.TECHNOLOGY -> stringResource(Res.string.category_technology)
     else -> categoryId
 }

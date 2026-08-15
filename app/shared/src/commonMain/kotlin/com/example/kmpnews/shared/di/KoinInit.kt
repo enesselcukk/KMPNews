@@ -2,6 +2,8 @@ package com.example.kmpnews.shared.di
 
 import com.example.kmpnews.core.navigation.navigationModule
 import com.example.kmpnews.core.network.di.newsApiModule
+import com.example.kmpnews.feature.detail.data.di.detailDataModule
+import com.example.kmpnews.feature.detail.domain.di.detailDomainModule
 import com.example.kmpnews.feature.detail.presentation.di.detailPresentationModule
 import com.example.kmpnews.feature.home.data.di.homeDataModule
 import com.example.kmpnews.feature.home.domain.di.homeDomainModule
@@ -17,6 +19,8 @@ private val sharedModules = listOf(
     homeDataModule,
     homeDomainModule,
     homePresentationModule,
+    detailDataModule,
+    detailDomainModule,
     detailPresentationModule,
 )
 

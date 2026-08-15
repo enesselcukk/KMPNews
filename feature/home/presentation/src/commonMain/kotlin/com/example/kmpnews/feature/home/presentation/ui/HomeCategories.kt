@@ -1,12 +1,5 @@
 package com.example.kmpnews.feature.home.presentation.ui
 
-object HomeCategories {
-    const val ALL = "all"
-    const val NEWS = "news"
-    const val TECHNOLOGY = "technology"
-    const val ECONOMY = "economy"
-    const val SPORTS = "sports"
-    const val WORLD = "world"
+import com.example.kmpnews.feature.home.domain.model.NewsHeadlineCategory
 
-    val ids = listOf(ALL, NEWS, TECHNOLOGY, ECONOMY, SPORTS, WORLD)
-}
+typealias HomeCategories = NewsHeadlineCategory

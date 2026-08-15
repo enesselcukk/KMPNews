@@ -13,6 +13,10 @@ val detailPresentationModule = module {
     }
 
     viewModel { parameters ->
-        DetailViewModel(articleId = parameters.get())
+        DetailViewModel(
+            articleUrl = parameters.get(),
+            getArticleDetailUseCase = get(),
+            navigationManager = get(),
+        )
     }
 }

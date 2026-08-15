@@ -13,10 +13,11 @@
     <string name="home_nav_explore">EXPLORE</string>
     <string name="home_nav_videos">VIDEOS</string>
     <string name="home_nav_profile">PROFILE</string>
-    <string name="category_all">ALL</string>
-    <string name="category_news">NEWS</string>
-    <string name="category_technology">TECHNOLOGY</string>
-    <string name="category_economy">ECONOMY</string>
+    <string name="category_general">GENERAL</string>
+    <string name="category_business">BUSINESS</string>
+    <string name="category_entertainment">ENTERTAINMENT</string>
+    <string name="category_health">HEALTH</string>
+    <string name="category_science">SCIENCE</string>
     <string name="category_sports">SPORTS</string>
-    <string name="category_world">WORLD</string>
+    <string name="category_technology">TECHNOLOGY</string>
 </resources>

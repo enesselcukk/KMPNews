@@ -1,6 +1,7 @@
 package com.example.kmpnews.feature.home.presentation.ui
 
 import androidx.compose.runtime.Immutable
+import com.example.kmpnews.feature.home.domain.model.NewsHeadlineCategory
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 
 @Immutable
@@ -18,6 +19,6 @@ sealed interface HomeUiState {
     data class Error(val message: String? = null) : HomeUiState
 
     companion object {
-        val defaultCategories = HomeCategories.ids
+        val defaultCategories = NewsHeadlineCategory.all
     }
 }
