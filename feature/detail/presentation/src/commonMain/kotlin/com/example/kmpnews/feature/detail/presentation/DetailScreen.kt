@@ -34,10 +34,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
+import com.example.kmpnews.core.designsystem.component.BackNavigationIconButton
 import com.example.kmpnews.core.designsystem.component.LoadingIndicator
 import com.example.kmpnews.core.designsystem.theme.SdhOnMediaOverlay
 import com.example.kmpnews.core.model.Article
@@ -93,23 +95,19 @@ private fun DetailScreenContent(
                     navigationIconContentColor = Color.White,
                 ),
                 navigationIcon = {
-                    TextButton(onClick = { onAction(DetailContract.Action.BackClicked) }) {
-                        Text(
-                            text = "← ${stringResource(Res.string.detail_back)}",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.8.sp,
-                            ),
-                        )
-                    }
+                    BackNavigationIconButton(
+                        onClick = { onAction(DetailContract.Action.BackClicked) },
+                        contentDescription = stringResource(Res.string.detail_back),
+                    )
                 },
                 title = {
                     Text(
-                        text = stringResource(Res.string.detail_article),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp,
-                        ),
+                        text = uiState.article?.title
+                            ?: stringResource(Res.string.detail_article),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 },
             )
