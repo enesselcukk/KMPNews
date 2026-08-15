@@ -2,6 +2,7 @@ package com.example.kmpnews.feature.home.presentation.ui
 
 import androidx.lifecycle.viewModelScope
 import com.example.kmpnews.core.domain.result.RestResult
+import com.example.kmpnews.core.navigation.NavigationCommand
 import com.example.kmpnews.core.navigation.NavigationManager
 import com.example.kmpnews.core.presentation.CoreViewModel
 import com.example.kmpnews.feature.detail.contract.DetailScreenDestination
@@ -81,8 +82,8 @@ class HomeViewModel(
     override fun navigateToDetail(newsId: String?) {
         if (newsId == null) return
         navigationManager.navigate(
-            navigationCommand = DetailScreenDestination(
-                newsId = newsId,
+            navigationCommand = NavigationCommand.NavigateTo(
+                to = DetailScreenDestination(newsId = newsId),
             )
         )
     }

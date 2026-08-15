@@ -29,8 +29,10 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
-            implementation(libs.navigation.compose)
+            api(libs.navigation3.ui)
+            api(libs.lifecycle.viewmodel.navigation3)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
             api(libs.koin.core)
         }
     }

@@ -58,7 +58,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
-            implementation(libs.navigation.compose)
+            implementation(libs.navigation3.ui)
         }
     }
 }

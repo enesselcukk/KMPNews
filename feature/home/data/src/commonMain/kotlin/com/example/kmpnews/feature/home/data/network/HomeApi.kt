@@ -12,7 +12,7 @@ class HomeApi(
     suspend fun getNews(): HttpResponse =
         httpClient.get("everything") {
             parameter("q", "spor")
-            parameter("language", "tr")
+            parameter("language", "en")
             parameter("page", "1")
             parameter("apiKey", API_KEY)
         }

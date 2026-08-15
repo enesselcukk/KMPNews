@@ -13,7 +13,7 @@ class NavigationManagerImpl : CoroutineScope, NavigationManager {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob()
 
-    private val navigationCommandChannel = Channel<NavigationCommand>()
+    private val navigationCommandChannel = Channel<NavigationCommand>(capacity = Channel.BUFFERED)
     override val navigationCommandFlow: Flow<NavigationCommand>
         get() = navigationCommandChannel.receiveAsFlow()
 

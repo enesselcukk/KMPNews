@@ -4,14 +4,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.example.kmpnews.core.designsystem.theme.KmpNewsTheme
-import com.example.kmpnews.core.navigation.NavGraphProvider
+import com.example.kmpnews.core.navigation.KmpNewsNavHost
+import com.example.kmpnews.core.navigation.NavEntryProvider
 import com.example.kmpnews.core.navigation.NavigationManager
 import com.example.kmpnews.feature.home.contract.HomeScreenDestination
 import org.koin.mp.KoinPlatform.getKoin
@@ -26,25 +26,17 @@ fun KmpNewsApp() {
             .build()
     }
 
-    val navController = rememberNavController()
-
-    val providers: List<NavGraphProvider> = getKoin().getAll()
-
-    val navigationManager = getKoin().get<NavigationManager>()
+    val features: List<NavEntryProvider> = remember { getKoin().getAll() }
+    val navigationManager = remember { getKoin().get<NavigationManager>() }
 
     KmpNewsTheme {
-        Scaffold(modifier = Modifier.fillMaxSize(), content = { paddingValues ->
-            NavHost(
+        Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+            KmpNewsNavHost(
                 modifier = Modifier.padding(paddingValues),
-                navController = navController,
-                startDestination = HomeScreenDestination
-            ) {
-                providers.forEach {
-                    it.registerGraph(provider = this)
-                }
-            }
-
-        })
+                startDestination = HomeScreenDestination,
+                features = features,
+                navigationManager = navigationManager,
+            )
+        }
     }
-
 }
