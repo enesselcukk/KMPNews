@@ -5,5 +5,7 @@ import com.example.kmpnews.core.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface DetailRepository {
+    fun getCachedArticle(articleUrl: String): Article?
+
     fun getArticleByUrl(articleUrl: String): Flow<RestResult<Article>>
 }

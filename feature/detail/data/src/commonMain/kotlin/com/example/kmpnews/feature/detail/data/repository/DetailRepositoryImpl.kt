@@ -17,6 +17,9 @@ class DetailRepositoryImpl(
     private val homeRepository: HomeRepository,
 ) : BaseRepository(), DetailRepository {
 
+    override fun getCachedArticle(articleUrl: String): Article? =
+        homeRepository.findCachedArticleByUrl(articleUrl)?.toArticle()
+
     override fun getArticleByUrl(articleUrl: String): Flow<RestResult<Article>> {
         homeRepository.findCachedArticleByUrl(articleUrl)?.let { cached ->
             return flow {

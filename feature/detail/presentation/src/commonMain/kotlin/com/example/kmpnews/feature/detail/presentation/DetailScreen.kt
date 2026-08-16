@@ -1,5 +1,10 @@
 package com.example.kmpnews.feature.detail.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +62,13 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 private const val HeroAspectRatio = 16f / 9f
+private const val CONTENT_CROSSFADE_DURATION_MS = 300
+
+private enum class DetailContentState {
+    Loading,
+    Error,
+    Content,
+}
 
 @Composable
 fun DetailScreen(
@@ -113,35 +125,45 @@ private fun DetailScreenContent(
             )
         },
     ) { paddingValues ->
-        when {
-            uiState.isLoading && uiState.article == null -> {
-                LoadingIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                )
-            }
+        val contentState = when {
+            uiState.isLoading && uiState.article == null -> DetailContentState.Loading
+            uiState.article == null -> DetailContentState.Error
+            else -> DetailContentState.Content
+        }
 
-            uiState.article == null -> {
-                DetailErrorState(
-                    message = uiState.errorMessage ?: stringResource(Res.string.detail_error_generic),
-                    onRetry = onRetry,
-                    onBack = { onAction(DetailContract.Action.BackClicked) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                )
-            }
+        AnimatedContent(
+            targetState = contentState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            transitionSpec = {
+                fadeIn(animationSpec = tween(CONTENT_CROSSFADE_DURATION_MS)) togetherWith
+                    fadeOut(animationSpec = tween(CONTENT_CROSSFADE_DURATION_MS))
+            },
+            label = "detail_content",
+        ) { state ->
+            when (state) {
+                DetailContentState.Loading -> {
+                    LoadingIndicator(modifier = Modifier.fillMaxSize())
+                }
 
-            else -> {
-                val article = checkNotNull(uiState.article)
-                DetailArticleContent(
-                    article = article,
-                    isRefreshing = uiState.isLoading,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                )
+                DetailContentState.Error -> {
+                    DetailErrorState(
+                        message = uiState.errorMessage ?: stringResource(Res.string.detail_error_generic),
+                        onRetry = onRetry,
+                        onBack = { onAction(DetailContract.Action.BackClicked) },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+
+                DetailContentState.Content -> {
+                    val article = checkNotNull(uiState.article)
+                    DetailArticleContent(
+                        article = article,
+                        isRefreshing = uiState.isLoading,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
     }

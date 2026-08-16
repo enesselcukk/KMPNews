@@ -38,6 +38,8 @@ fun KmpNewsNavHost(
     NavDisplay(
         backStack = backStack,
         modifier = modifier,
+        transitionSpec = kmpNewsForwardTransitionSpec(),
+        popTransitionSpec = kmpNewsPopTransitionSpec(),
         onBack = {
             backStack.execute(NavigationCommand.NavigateUp)
         },

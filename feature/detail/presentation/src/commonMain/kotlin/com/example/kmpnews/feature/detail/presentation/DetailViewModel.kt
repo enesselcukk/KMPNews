@@ -18,8 +18,17 @@ class DetailViewModel(
     private val navigationManager: NavigationManager,
 ) : CoreViewModel() {
 
-    private val _uiState = MutableStateFlow(DetailContract.UiState(isLoading = true))
+    private val _uiState = MutableStateFlow(initialUiState())
     val uiState: StateFlow<DetailContract.UiState> = _uiState.asStateFlow()
+
+    private fun initialUiState(): DetailContract.UiState {
+        val cachedArticle = getArticleDetailUseCase.getCached(articleUrl)
+        return if (cachedArticle != null) {
+            DetailContract.UiState(article = cachedArticle, isLoading = false)
+        } else {
+            DetailContract.UiState(isLoading = true)
+        }
+    }
 
     init {
         loadArticle()

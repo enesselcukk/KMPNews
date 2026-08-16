@@ -1,5 +1,13 @@
 package com.example.kmpnews.feature.home.presentation.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,11 +38,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +68,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private val HeadlineCardMaxWidth = 380.dp
 private const val HeadlineCardAspectRatio = 16f / 9f
+private const val CATEGORY_CONTENT_ANIMATION_MS = 350
 
 @Composable
 fun HomeScreen(
@@ -84,18 +95,50 @@ fun HomeScreen(
                     selectedCategory = state.selectedCategory,
                     onCategorySelected = viewModel::onCategorySelected,
                 )
-                if (state.headlines.isEmpty() && state.feed.isEmpty()) {
-                    HomeMessage(
-                        text = stringResource(Res.string.home_empty_news),
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    HomeContent(
-                        headlines = state.headlines,
-                        feed = state.feed,
-                        actions = viewModel,
-                        modifier = Modifier.weight(1f),
-                    )
+                Box(modifier = Modifier.weight(1f)) {
+                    AnimatedContent(
+                        targetState = state.content,
+                        modifier = Modifier.fillMaxSize(),
+                        contentKey = { it.category },
+                        transitionSpec = {
+                            (fadeIn(tween(CATEGORY_CONTENT_ANIMATION_MS)) +
+                                slideInHorizontally(tween(CATEGORY_CONTENT_ANIMATION_MS)) { it / 5 }) togetherWith
+                                (fadeOut(tween(CATEGORY_CONTENT_ANIMATION_MS)) +
+                                    slideOutHorizontally(tween(CATEGORY_CONTENT_ANIMATION_MS)) { -it / 5 })
+                        },
+                        label = "home_category_content",
+                    ) { content ->
+                        when {
+                            content.headlines.isEmpty() && content.feed.isEmpty() && state.isRefreshing -> {
+                                HomeCategoryLoadingContent(modifier = Modifier.fillMaxSize())
+                            }
+
+                            content.headlines.isEmpty() && content.feed.isEmpty() -> {
+                                HomeMessage(
+                                    text = stringResource(Res.string.home_empty_news),
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+
+                            else -> {
+                                HomeContent(
+                                    category = content.category,
+                                    headlines = content.headlines,
+                                    feed = content.feed,
+                                    actions = viewModel,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                        }
+                    }
+
+                    if (state.isRefreshing) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
+                        )
+                    }
                 }
                 HomeBottomBar(
                     selectedIndex = state.selectedBottomNav,
@@ -189,6 +232,11 @@ private fun HomeCategoryTabs(
     ) {
         items(categories) { category ->
             val selected = category == selectedCategory
+            val indicatorWidth by animateDpAsState(
+                targetValue = if (selected) 28.dp else 0.dp,
+                animationSpec = tween(CATEGORY_CONTENT_ANIMATION_MS),
+                label = "category_indicator_width",
+            )
             Column(
                 modifier = Modifier.clickable { onCategorySelected(category) },
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -203,7 +251,7 @@ private fun HomeCategoryTabs(
                 Box(
                     modifier = Modifier
                         .height(3.dp)
-                        .width(if (selected) 28.dp else 0.dp)
+                        .width(indicatorWidth)
                         .background(
                             color = colors.primary,
                             shape = RoundedCornerShape(2.dp),
@@ -217,6 +265,7 @@ private fun HomeCategoryTabs(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContent(
+    category: String,
     headlines: List<NewsHomeArticleDto>,
     feed: List<NewsHomeArticleDto>,
     actions: HomeActions,
@@ -225,7 +274,9 @@ private fun HomeContent(
     if (headlines.isEmpty() && feed.isEmpty()) return
 
     val colors = MaterialTheme.colorScheme
-    val pagerState = rememberPagerState(pageCount = { headlines.size.coerceAtLeast(1) })
+    val pagerState = key(category) {
+        rememberPagerState(pageCount = { headlines.size.coerceAtLeast(1) })
+    }
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
@@ -452,6 +503,65 @@ private fun HomeBottomBar(
                     fontSize = 10.sp,
                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeCategoryLoadingContent(modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
+
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(HeadlineCardAspectRatio)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.surfaceVariant),
+            )
+        }
+
+        items(4) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colors.surface)
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(colors.surfaceVariant),
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(14.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(colors.surfaceVariant),
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.55f)
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(colors.surfaceVariant),
+                    )
+                }
             }
         }
     }

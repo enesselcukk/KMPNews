@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 class GetArticleDetailUseCase(
     private val detailRepository: DetailRepository,
 ) {
+    fun getCached(articleUrl: String): Article? =
+        detailRepository.getCachedArticle(articleUrl)
+
     operator fun invoke(articleUrl: String): Flow<RestResult<Article>> =
         detailRepository.getArticleByUrl(articleUrl)
 }

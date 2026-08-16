@@ -26,6 +26,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":app:ui-components"))
             implementation(libs.compose.runtime)
+            implementation(libs.compose.animation)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)

@@ -24,6 +24,7 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val categoryArticlesCache = mutableMapOf<String, List<NewsHomeArticleDto>>()
     private var newsLoadJob: Job? = null
 
     init {
@@ -36,7 +37,16 @@ class HomeViewModel(
 
         _uiState.update { state ->
             when (state) {
-                is HomeUiState.Success -> state.copy(selectedCategory = category)
+                is HomeUiState.Success -> {
+                    val cachedArticles = categoryArticlesCache[category]
+                    buildSuccess(
+                        articles = cachedArticles.orEmpty(),
+                        category = category,
+                        selectedBottomNav = state.selectedBottomNav,
+                        isRefreshing = cachedArticles == null,
+                    )
+                }
+
                 else -> HomeUiState.Loading
             }
         }
@@ -58,35 +68,75 @@ class HomeViewModel(
         newsLoadJob = viewModelScope.launch {
             safeFlowApiCall { homeNewsUseCase(category) }
                 .collect { result ->
+                    val current = _uiState.value
                     _uiState.value = when (result) {
                         is RestResult.Loading -> {
-                            result.result?.let { toSuccess(it, category) } ?: HomeUiState.Loading
+                            when {
+                                current is HomeUiState.Success && current.selectedCategory == category -> {
+                                    current.copy(isRefreshing = true)
+                                }
+
+                                result.result != null -> {
+                                    buildSuccess(
+                                        articles = checkNotNull(result.result),
+                                        category = category,
+                                        selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
+                                        isRefreshing = true,
+                                    )
+                                }
+
+                                else -> HomeUiState.Loading
+                            }
                         }
 
-                        is RestResult.Success -> toSuccess(result.result, category)
+                        is RestResult.Success -> {
+                            categoryArticlesCache[category] = result.result
+                            buildSuccess(
+                                articles = result.result,
+                                category = category,
+                                selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
+                                isRefreshing = false,
+                            )
+                        }
 
                         is RestResult.Error -> {
-                            result.result?.let { toSuccess(it, category) }
-                                ?: HomeUiState.Error(
-                                    message = result.error.message,
-                                )
+                            when {
+                                current is HomeUiState.Success && current.selectedCategory == category -> {
+                                    current.copy(isRefreshing = false)
+                                }
+
+                                result.result != null -> {
+                                    buildSuccess(
+                                        articles = checkNotNull(result.result),
+                                        category = category,
+                                        selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
+                                        isRefreshing = false,
+                                    )
+                                }
+
+                                else -> HomeUiState.Error(message = result.error.message)
+                            }
                         }
                     }
                 }
         }
     }
 
-    private fun toSuccess(
+    private fun buildSuccess(
         articles: List<NewsHomeArticleDto>,
         category: String,
+        selectedBottomNav: Int,
+        isRefreshing: Boolean,
     ): HomeUiState.Success {
-        val current = _uiState.value as? HomeUiState.Success
         return HomeUiState.Success(
-            headlines = articles.take(HEADLINE_COUNT),
-            feed = articles,
+            content = HomeCategoryContent(
+                category = category,
+                headlines = articles.take(HEADLINE_COUNT),
+                feed = articles,
+            ),
             categories = HomeUiState.defaultCategories,
-            selectedCategory = category,
-            selectedBottomNav = current?.selectedBottomNav ?: 0,
+            selectedBottomNav = selectedBottomNav,
+            isRefreshing = isRefreshing,
         )
     }
 
@@ -95,7 +145,7 @@ class HomeViewModel(
         navigationManager.navigate(
             navigationCommand = NavigationCommand.NavigateTo(
                 to = DetailScreenDestination(newsId = newsId),
-            )
+            ),
         )
     }
 
