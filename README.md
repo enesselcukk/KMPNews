@@ -25,14 +25,15 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 ## Features
 
 - **Multiplatform** — shared UI and business logic for Android, iOS, and Desktop
-- **Live news feed** — Turkish sports news via News API
-- **Headline carousel** — horizontal pager for featured articles
+- **Category tabs** — `general`, `business`, `entertainment`, `health`, `science`, `sports`, `technology`
+- **Article detail** — hero image, metadata, summary, and full content with back navigation
+- **Headline carousel** — horizontal pager for featured articles on the home screen
 - **Image loading** — remote article images with Coil 3
 - **Material 3 theme** — SDH brand colors (orange / navy), light & dark mode
 - **Localization** — TR / EN string resources via Compose Multiplatform Resources
 - **Modular architecture** — feature-based layers (contract, domain, data, presentation)
 - **Dependency injection** — Koin for platform and feature module registration
-- **Type-safe navigation** — Navigation Compose with contract modules
+- **Navigation 3** — user-owned back stack, modular `NavEntryProvider`, and ViewModel scoping per destination
 
 ---
 
@@ -46,8 +47,8 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 | DI | Koin **4.2.2** |
 | Networking | Ktor Client **3.5.2**, kotlinx.serialization |
 | Images | Coil **3.5.0** (Ktor network fetcher) |
-| Navigation | Navigation Compose **2.9.2** |
-| Lifecycle | AndroidX Lifecycle **2.9.6** (ViewModel, runtime-compose) |
+| Navigation | Navigation 3 **1.1.1** (`NavDisplay`, `NavKey`, `rememberNavBackStack`) |
+| Lifecycle | AndroidX Lifecycle **2.9.6** (ViewModel, runtime-compose, viewmodel-navigation3) |
 | Data | Room 3, SQLite, Multiplatform Settings |
 | Localization | Compose Resources (`composeResources`) |
 | Build | Gradle **9.x**, AGP **9.0.1**, Convention Plugins (`build-logic`) |
@@ -66,7 +67,7 @@ The app uses a modular structure that separates responsibilities per feature:
 └──────────────────────────┬──────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────┐
-│  app/shared          KmpNewsApp, Koin, NavHost           │
+│  app/shared          KmpNewsApp, Koin, KmpNewsNavHost     │
 │  app/ui-components   KmpNewsTheme, design system         │
 └──────────────────────────┬──────────────────────────────┘
                            │
@@ -74,16 +75,26 @@ The app uses a modular structure that separates responsibilities per feature:
         ▼                  ▼                  ▼
 ┌───────────────┐  ┌───────────────┐  ┌───────────────────┐
 │ feature/home  │  │ feature/detail│  │ core/*            │
-│ contract      │  │ ...           │  │ network, domain,  │
-│ domain        │  │               │  │ navigation, db... │
-│ data          │  │               │  │                   │
-│ presentation  │  │               │  │                   │
+│ contract      │  │ contract      │  │ network, domain,  │
+│ domain        │  │ domain        │  │ navigation, db... │
+│ data          │  │ data          │  │                   │
+│ presentation  │  │ presentation  │  │                   │
 └───────────────┘  └───────────────┘  └───────────────────┘
 ```
 
 **Data flow (Home):**
 
-`HomeScreen` → `HomeViewModel` → `HomeNewsUseCase` → `HomeRepository` → `HomeApi` → News API
+`HomeScreen` → `HomeViewModel` → `HomeNewsUseCase` → `HomeRepository` → `HomeApi` → News API `/v2/top-headlines`
+
+**Data flow (Detail):**
+
+`DetailScreen` → `DetailViewModel` → `GetArticleDetailUseCase` → `DetailRepository` → cached home feed / News API
+
+**Navigation flow:**
+
+`ViewModel` → `NavigationManager` → `NavBackStack` → `NavDisplay` → feature `NavEntryProvider`
+
+Each feature registers its own `@Serializable` destinations and screen entries through Koin. Navigation state is saveable across configuration changes and process death on all KMP targets.
 
 ---
 
@@ -96,18 +107,18 @@ KMPNews/
 │   ├── desktopApp/       # Desktop (JVM) application module
 │   ├── iosApp/           # iOS Xcode project + Kotlin bridge
 │   ├── shared/           # Shared entry point (KmpNewsApp, Koin)
-│   └── ui-components/    # Theme, typography, color palette
+│   └── ui-components/    # Theme, typography, shared UI components
 ├── core/
 │   ├── model/            # Shared models
 │   ├── domain/           # Result types, use case base
 │   ├── network/          # Ktor HttpClient, News API config
 │   ├── database/         # Room / SQLite
 │   ├── datastore/        # Settings (Multiplatform Settings)
-│   ├── navigation/       # NavigationManager, NavGraphProvider
+│   ├── navigation/       # NavigationManager, KmpNewsNavHost, NavEntryProvider
 │   └── presentation/     # CoreViewModel, shared presentation helpers
 ├── feature/
-│   ├── home/             # Home screen (contract · domain · data · presentation)
-│   └── detail/           # Article detail (work in progress)
+│   ├── home/             # Home feed, categories, headlines
+│   └── detail/           # Article detail screen
 ├── build-logic/          # Gradle convention plugins
 └── docs/screenshots/     # README screenshots
 ```
@@ -180,7 +191,6 @@ Build via Gradle:
 
 ---
 
-
 ## Localization
 
 String resources are managed with Compose Multiplatform Resources:
@@ -189,6 +199,10 @@ String resources are managed with Compose Multiplatform Resources:
 feature/home/presentation/src/commonMain/composeResources/
 ├── values/strings.xml       # Default (EN)
 └── values-tr/strings.xml    # Turkish
+
+feature/detail/presentation/src/commonMain/composeResources/
+├── values/strings.xml
+└── values-tr/strings.xml
 ```
 
 Usage in code:
@@ -199,3 +213,21 @@ Text(stringResource(Res.string.home_headlines))
 
 The system locale automatically selects the matching `values-*` folder.
 
+---
+
+## Navigation
+
+Navigation is built on **Navigation 3** with a modular provider pattern:
+
+- Destinations implement `NavigationCommand.Destination` and `NavKey`
+- Each feature exposes a `NavEntryProvider` (serializer registration + `entry<>` DSL)
+- `KmpNewsNavHost` merges providers, restores the back stack, and wires `NavigationManager`
+- ViewModels are scoped to navigation entries via `rememberViewModelStoreNavEntryDecorator()`
+
+To add a new screen:
+
+1. Define a `@Serializable` destination in the feature `contract` module
+2. Register the route in a feature `NavEntryProvider`
+3. Bind the provider in the feature Koin module
+
+---
