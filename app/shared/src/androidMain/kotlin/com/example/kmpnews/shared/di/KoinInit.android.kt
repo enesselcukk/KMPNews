@@ -10,6 +10,7 @@ val androidPlatformModule = module {
     single<NewsDatabase> {
         DatabaseFactory(get()).createDatabase()
     }
+    single { get<NewsDatabase>().homeHeadlineDao() }
 }
 
 fun initAppKoin(context: Context) {

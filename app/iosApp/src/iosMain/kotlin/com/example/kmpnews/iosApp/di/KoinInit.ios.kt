@@ -9,6 +9,7 @@ private val iosPlatformModule = module {
     single<NewsDatabase> {
         DatabaseFactory().createDatabase()
     }
+    single { get<NewsDatabase>().homeHeadlineDao() }
 }
 
 fun initAppKoin() {

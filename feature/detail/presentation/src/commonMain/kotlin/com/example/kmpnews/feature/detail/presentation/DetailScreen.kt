@@ -20,15 +20,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -50,7 +47,6 @@ import com.example.kmpnews.core.designsystem.theme.SdhOnMediaOverlay
 import com.example.kmpnews.core.model.Article
 import com.example.kmpnews.feature.detail.contract.DetailContract
 import com.example.kmpnews.feature.detail.presentation.generated.resources.Res
-import com.example.kmpnews.feature.detail.presentation.generated.resources.detail_article
 import com.example.kmpnews.feature.detail.presentation.generated.resources.detail_back
 import com.example.kmpnews.feature.detail.presentation.generated.resources.detail_by_author
 import com.example.kmpnews.feature.detail.presentation.generated.resources.detail_error_generic
@@ -86,7 +82,6 @@ fun DetailScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailScreenContent(
     uiState: DetailContract.UiState,
@@ -100,29 +95,23 @@ private fun DetailScreenContent(
         modifier = modifier.fillMaxSize(),
         containerColor = colors.background,
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colors.secondary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                ),
-                navigationIcon = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = colors.secondary,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     BackNavigationIconButton(
                         onClick = { onAction(DetailContract.Action.BackClicked) },
                         contentDescription = stringResource(Res.string.detail_back),
+                        tint = Color.White,
                     )
-                },
-                title = {
-                    Text(
-                        text = uiState.article?.title
-                            ?: stringResource(Res.string.detail_article),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-            )
+                }
+            }
         },
     ) { paddingValues ->
         val contentState = when {

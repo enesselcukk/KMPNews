@@ -8,6 +8,7 @@ val jvmPlatformModule = module {
     single<NewsDatabase> {
         DatabaseFactory().createDatabase()
     }
+    single { get<NewsDatabase>().homeHeadlineDao() }
 }
 
 fun initAppKoin() {

@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core:model"))
-            implementation(libs.room3.runtime)
+            api(libs.room3.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.kotlinx.coroutines.core)
         }

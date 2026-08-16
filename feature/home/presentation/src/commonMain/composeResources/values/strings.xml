@@ -1,18 +1,18 @@
 <resources>
     <string name="home_app_title">SDH</string>
-    <string name="home_breaking_news">BREAKING NEWS</string>
     <string name="home_news">NEWS</string>
-    <string name="home_search">SEARCH</string>
-    <string name="home_notifications">NOTIFICATIONS</string>
+    <string name="home_search">Search</string>
     <string name="home_empty_news">No news to display.</string>
-    <string name="home_headlines">HEADLINES</string>
-    <string name="home_current_feed">CURRENT FEED</string>
+    <string name="home_featured_news">FEATURED NEWS</string>
     <string name="home_just_now">Just now</string>
+    <string name="home_time_minutes_ago">%1$d min ago</string>
+    <string name="home_time_hours_ago">%1$d hours ago</string>
+    <string name="home_read_time_minutes">%1$d min read</string>
     <string name="home_error_generic">An error occurred.</string>
-    <string name="home_nav_home">HOME</string>
-    <string name="home_nav_explore">EXPLORE</string>
-    <string name="home_nav_videos">VIDEOS</string>
-    <string name="home_nav_profile">PROFILE</string>
+    <string name="home_action_bookmark">Bookmark</string>
+    <string name="home_action_share">Share</string>
+    <string name="home_icon_bookmark">🔖</string>
+    <string name="home_icon_share">↗</string>
     <string name="category_general">GENERAL</string>
     <string name="category_business">BUSINESS</string>
     <string name="category_entertainment">ENTERTAINMENT</string>

@@ -22,8 +22,7 @@ fun KmpNewsApp() {
         ImageLoader.Builder(context)
             .components {
                 add(KtorNetworkFetcherFactory())
-            }
-            .build()
+            }.build()
     }
 
     val features: List<NavEntryProvider> = remember { getKoin().getAll() }

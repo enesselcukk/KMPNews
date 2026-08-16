@@ -2,6 +2,7 @@ package com.example.kmpnews.feature.home.data.repository
 
 import com.example.kmpnews.core.data.BaseRepository
 import com.example.kmpnews.core.domain.result.RestResult
+import com.example.kmpnews.feature.home.data.local.HomeNewsLocalDataSource
 import com.example.kmpnews.feature.home.data.mapper.toNewsHomeArticles
 import com.example.kmpnews.feature.home.data.network.HomeApi
 import com.example.kmpnews.feature.home.domain.model.ArticlesResponse
@@ -12,17 +13,32 @@ import kotlinx.coroutines.flow.onEach
 
 class HomeNewsRepositoryImpl(
     private val homeApi: HomeApi,
+    private val localDataSource: HomeNewsLocalDataSource,
 ) : BaseRepository(), HomeRepository {
 
     private val articleCache = mutableMapOf<String, NewsHomeArticleDto>()
 
     override fun getHomeNews(category: String): Flow<RestResult<List<NewsHomeArticleDto>>> =
-        networkOnlyFlow(
+        offlineFirstFlow(
             fetchFromNetwork = { homeApi.getTopHeadlines(category) },
-            mapToDomain = ArticlesResponse::toNewsHomeArticles,
+            saveToLocal = { response ->
+                localDataSource.saveArticles(
+                    category = category,
+                    articles = response.toNewsHomeArticles(),
+                )
+            },
+            readFromLocal = { localDataSource.getArticlesByCategory(category) },
+            mapToDomain = { articles -> articles },
+            mapNetworkToDomain = ArticlesResponse::toNewsHomeArticles,
+            shouldFetch = { articles -> articles.isEmpty() },
         ).onEach { result ->
-            if (result is RestResult.Success) {
-                cacheArticles(result.result)
+            val articles = when (result) {
+                is RestResult.Loading -> result.result
+                is RestResult.Success -> result.result
+                is RestResult.Error -> result.result
+            }
+            if (articles != null) {
+                cacheArticles(articles)
             }
         }
 
@@ -31,7 +47,7 @@ class HomeNewsRepositoryImpl(
 
     private fun cacheArticles(articles: List<NewsHomeArticleDto>) {
         articles.forEach { article ->
-            article.url?.let { url -> articleCache[url] = article }
+            article.url?.let { articleUrl -> articleCache[articleUrl] = article }
         }
     }
 }

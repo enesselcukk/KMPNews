@@ -18,7 +18,6 @@ sealed interface HomeUiState {
     data class Success(
         val content: HomeCategoryContent,
         val categories: List<String>,
-        val selectedBottomNav: Int = 0,
         val isRefreshing: Boolean = false,
     ) : HomeUiState {
         val selectedCategory: String get() = content.category

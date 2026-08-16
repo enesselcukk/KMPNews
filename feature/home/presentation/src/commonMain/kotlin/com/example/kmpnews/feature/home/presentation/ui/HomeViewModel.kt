@@ -42,7 +42,6 @@ class HomeViewModel(
                     buildSuccess(
                         articles = cachedArticles.orEmpty(),
                         category = category,
-                        selectedBottomNav = state.selectedBottomNav,
                         isRefreshing = cachedArticles == null,
                     )
                 }
@@ -51,16 +50,6 @@ class HomeViewModel(
             }
         }
         loadNews(category)
-    }
-
-    fun onBottomNavSelected(index: Int) {
-        _uiState.update { state ->
-            if (state is HomeUiState.Success) {
-                state.copy(selectedBottomNav = index)
-            } else {
-                state
-            }
-        }
     }
 
     private fun loadNews(category: String) {
@@ -80,7 +69,6 @@ class HomeViewModel(
                                     buildSuccess(
                                         articles = checkNotNull(result.result),
                                         category = category,
-                                        selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
                                         isRefreshing = true,
                                     )
                                 }
@@ -94,7 +82,6 @@ class HomeViewModel(
                             buildSuccess(
                                 articles = result.result,
                                 category = category,
-                                selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
                                 isRefreshing = false,
                             )
                         }
@@ -109,7 +96,6 @@ class HomeViewModel(
                                     buildSuccess(
                                         articles = checkNotNull(result.result),
                                         category = category,
-                                        selectedBottomNav = (current as? HomeUiState.Success)?.selectedBottomNav ?: 0,
                                         isRefreshing = false,
                                     )
                                 }
@@ -125,7 +111,6 @@ class HomeViewModel(
     private fun buildSuccess(
         articles: List<NewsHomeArticleDto>,
         category: String,
-        selectedBottomNav: Int,
         isRefreshing: Boolean,
     ): HomeUiState.Success {
         return HomeUiState.Success(
@@ -135,7 +120,6 @@ class HomeViewModel(
                 feed = articles,
             ),
             categories = HomeUiState.defaultCategories,
-            selectedBottomNav = selectedBottomNav,
             isRefreshing = isRefreshing,
         )
     }

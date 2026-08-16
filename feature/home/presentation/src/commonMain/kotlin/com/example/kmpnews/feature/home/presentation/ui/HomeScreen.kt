@@ -8,7 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,33 +18,26 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,16 +51,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
-import com.example.kmpnews.core.designsystem.theme.SdhOnMediaOverlay
-import com.example.kmpnews.core.designsystem.theme.SdhOnMediaOverlayMuted
+import com.example.kmpnews.core.designsystem.component.SearchIconButton
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 import com.example.kmpnews.feature.home.presentation.generated.resources.Res
-import com.example.kmpnews.feature.home.presentation.generated.resources.*
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_app_title
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_icon_bookmark
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_icon_share
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_empty_news
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_error_generic
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_featured_news
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_news
+import com.example.kmpnews.feature.home.presentation.generated.resources.home_search
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-private val HeadlineCardMaxWidth = 380.dp
-private const val HeadlineCardAspectRatio = 16f / 9f
+private const val HeroAspectRatio = 4f / 3f
 private const val CATEGORY_CONTENT_ANIMATION_MS = 350
 
 @Composable
@@ -90,11 +88,6 @@ fun HomeScreen(
                 modifier = Modifier.weight(1f),
             )
             is HomeUiState.Success -> {
-                HomeCategoryTabs(
-                    categories = state.categories,
-                    selectedCategory = state.selectedCategory,
-                    onCategorySelected = viewModel::onCategorySelected,
-                )
                 Box(modifier = Modifier.weight(1f)) {
                     AnimatedContent(
                         targetState = state.content,
@@ -122,7 +115,9 @@ fun HomeScreen(
 
                             else -> {
                                 HomeContent(
-                                    category = content.category,
+                                    categories = state.categories,
+                                    selectedCategory = state.selectedCategory,
+                                    onCategorySelected = viewModel::onCategorySelected,
                                     headlines = content.headlines,
                                     feed = content.feed,
                                     actions = viewModel,
@@ -140,10 +135,6 @@ fun HomeScreen(
                         )
                     }
                 }
-                HomeBottomBar(
-                    selectedIndex = state.selectedBottomNav,
-                    onItemSelected = viewModel::onBottomNavSelected,
-                )
             }
         }
     }
@@ -160,57 +151,45 @@ private fun HomeTopBar() {
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = stringResource(Res.string.home_app_title),
-            color = colors.primary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 22.sp,
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                text = stringResource(Res.string.home_breaking_news),
-                color = colors.onSecondary,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                lineHeight = 14.sp,
-            )
-            Text(
-                text = stringResource(Res.string.home_news),
-                color = colors.onSecondary,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                lineHeight = 14.sp,
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        HomeTopBarAction(label = stringResource(Res.string.home_search), icon = "⌕")
-        Spacer(modifier = Modifier.width(12.dp))
-        HomeTopBarAction(label = stringResource(Res.string.home_notifications), icon = "🔔")
-        Spacer(modifier = Modifier.width(12.dp))
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(colors.primary),
+                .size(44.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(colors.primaryContainer),
             contentAlignment = Alignment.Center,
         ) {
-            Text(text = "E", color = colors.onPrimary, fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(Res.string.home_app_title),
+                color = colors.primary,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            )
         }
-    }
-}
 
-@Composable
-private fun HomeTopBarAction(label: String, icon: String) {
-    val colors = MaterialTheme.colorScheme
+        Spacer(modifier = Modifier.width(12.dp))
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = icon, color = colors.onSecondary, fontSize = 18.sp)
-        Text(
-            text = label,
-            color = colors.onSecondary.copy(alpha = 0.85f),
-            fontSize = 9.sp,
-            fontWeight = FontWeight.Medium,
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(Res.string.home_app_title),
+                    color = colors.onSecondary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(Res.string.home_news),
+                    color = colors.onSecondary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                )
+            }
+        }
+
+        SearchIconButton(
+            onClick = { /* TODO: search */ },
+            contentDescription = stringResource(Res.string.home_search),
+            tint = colors.onSecondary,
         )
     }
 }
@@ -224,16 +203,14 @@ private fun HomeCategoryTabs(
     val colors = MaterialTheme.colorScheme
 
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colors.surface),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         items(categories) { category ->
             val selected = category == selectedCategory
             val indicatorWidth by animateDpAsState(
-                targetValue = if (selected) 28.dp else 0.dp,
+                targetValue = if (selected) 24.dp else 0.dp,
                 animationSpec = tween(CATEGORY_CONTENT_ANIMATION_MS),
                 label = "category_indicator_width",
             )
@@ -245,12 +222,13 @@ private fun HomeCategoryTabs(
                     text = homeCategoryLabel(category),
                     color = if (selected) colors.primary else colors.onSurfaceVariant,
                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = 13.sp,
+                    style = MaterialTheme.typography.labelMedium,
+                    letterSpacing = 0.6.sp,
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Box(
                     modifier = Modifier
-                        .height(3.dp)
+                        .height(2.dp)
                         .width(indicatorWidth)
                         .background(
                             color = colors.primary,
@@ -262,10 +240,11 @@ private fun HomeCategoryTabs(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContent(
-    category: String,
+    categories: List<String>,
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit,
     headlines: List<NewsHomeArticleDto>,
     feed: List<NewsHomeArticleDto>,
     actions: HomeActions,
@@ -273,76 +252,108 @@ private fun HomeContent(
 ) {
     if (headlines.isEmpty() && feed.isEmpty()) return
 
-    val colors = MaterialTheme.colorScheme
-    val pagerState = key(category) {
-        rememberPagerState(pageCount = { headlines.size.coerceAtLeast(1) })
-    }
+    val heroArticle = headlines.firstOrNull() ?: feed.first()
+    val featuredArticles = feed.filter { it.url != heroArticle.url }
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(bottom = 16.dp),
+        contentPadding = PaddingValues(bottom = 24.dp),
     ) {
         item {
-            if (headlines.isNotEmpty()) {
-                SectionTitle(title = stringResource(Res.string.home_headlines))
-                HorizontalPager(
-                    state = pagerState,
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    pageSpacing = 12.dp,
-                ) { page ->
-                    val article = headlines[page]
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        HeadlineCard(
-                            article = article,
-                            onClick = { actions.navigateToDetail(article.url.orEmpty()) },
-                            modifier = Modifier
-                                .fillMaxWidth(0.85f)
-                                .widthIn(max = HeadlineCardMaxWidth)
-                                .aspectRatio(HeadlineCardAspectRatio),
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    repeat(headlines.size) { index ->
-                        val selected = pagerState.currentPage == index
-                        Box(
-                            modifier = Modifier
-                                .padding(horizontal = 3.dp)
-                                .size(if (selected) 8.dp else 6.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (selected) colors.primary
-                                    else colors.onSurfaceVariant.copy(alpha = 0.35f),
-                                ),
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            SectionTitle(title = stringResource(Res.string.home_current_feed))
+            HomeHeroArticle(
+                article = heroArticle,
+                onClick = { actions.navigateToDetail(heroArticle.url.orEmpty()) },
+            )
         }
 
-        items(feed.size, key = { feed[it].url.orEmpty() }) { index ->
-            val article = feed[index]
-            FeedArticleCard(
+        item {
+            HomeCategoryTabs(
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = onCategorySelected,
+            )
+        }
+
+        item {
+            SectionTitle(title = stringResource(Res.string.home_featured_news))
+        }
+
+        itemsIndexed(
+            items = featuredArticles,
+            key = { _, article -> article.url.orEmpty() },
+        ) { index, article ->
+            FeaturedNewsCard(
                 article = article,
-                trailingIcon = when (index % 3) {
-                    0 -> "🔖"
-                    1 -> "↗"
-                    else -> "♡"
-                },
-                onClick = { actions.navigateToDetail(article.url.orEmpty())},
+                showBookmarkAction = index % 2 == 0,
+                onClick = { actions.navigateToDetail(article.url.orEmpty()) },
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
         }
     }
+}
+
+@Composable
+private fun HomeHeroArticle(
+    article: NewsHomeArticleDto,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = MaterialTheme.colorScheme
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(HeroAspectRatio)
+            .clickable(onClick = onClick),
+    ) {
+        NewsArticleImage(
+            imageUrl = article.urlToImage,
+            contentDescription = article.title,
+            modifier = Modifier.fillMaxSize(),
+            alignment = Alignment.TopCenter,
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(headlineScrimBrush(colors)),
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = article.title.orEmpty().uppercase(),
+                color = colors.inverseOnSurface,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
+                lineHeight = 28.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HeroMetaText(text = formatHomeRelativeTime(article.publishedAt))
+                HeroMetaText(text = formatHomeReadTime(article))
+            }
+        }
+    }
+}
+
+@Composable
+private fun HeroMetaText(text: String) {
+    Text(
+        text = text,
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.labelMedium,
+    )
 }
 
 @Composable
@@ -352,70 +363,15 @@ private fun SectionTitle(title: String) {
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         color = MaterialTheme.colorScheme.onBackground,
         fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
+        fontSize = 14.sp,
+        letterSpacing = 1.sp,
     )
 }
 
 @Composable
-private fun HeadlineCard(
+private fun FeaturedNewsCard(
     article: NewsHomeArticleDto,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val colors = MaterialTheme.colorScheme
-
-    Card(
-        modifier = modifier.clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            NewsArticleImage(
-                imageUrl = article.urlToImage,
-                contentDescription = article.title,
-                modifier = Modifier.fillMaxSize(),
-                alignment = Alignment.TopCenter,
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.68f)
-                    .align(Alignment.BottomCenter)
-                    .background(headlineScrimBrush(colors))
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                contentAlignment = Alignment.BottomStart,
-            ) {
-                CompositionLocalProvider(LocalContentColor provides SdhOnMediaOverlay) {
-                    Column {
-                        Text(
-                            text = article.title.orEmpty(),
-                            color = SdhOnMediaOverlay,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            lineHeight = 20.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = article.description ?: article.publishedAt.orEmpty(),
-                            color = SdhOnMediaOverlayMuted,
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FeedArticleCard(
-    article: NewsHomeArticleDto,
-    trailingIcon: String,
+    showBookmarkAction: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -425,85 +381,52 @@ private fun FeedArticleCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = colors.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, colors.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             NewsArticleImage(
                 imageUrl = article.urlToImage,
                 contentDescription = article.title,
                 modifier = Modifier
                     .size(72.dp)
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(12.dp)),
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 Text(
-                    text = article.title.orEmpty(),
+                    text = article.title.orEmpty().uppercase(),
                     color = colors.onSurface,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = article.publishedAt ?: stringResource(Res.string.home_just_now),
-                    color = colors.onSurfaceVariant,
-                    fontSize = 12.sp,
+                    text = formatHomeRelativeTime(article.publishedAt),
+                    color = colors.primary,
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
+
             Text(
-                text = trailingIcon,
+                text = stringResource(
+                    if (showBookmarkAction) Res.string.home_icon_bookmark else Res.string.home_icon_share,
+                ),
                 fontSize = 18.sp,
                 color = colors.onSurfaceVariant,
+                modifier = Modifier.padding(start = 4.dp),
             )
-        }
-    }
-}
-
-@Composable
-private fun HomeBottomBar(
-    selectedIndex: Int,
-    onItemSelected: (Int) -> Unit,
-) {
-    val items = listOf(
-        stringResource(Res.string.home_nav_home) to "⌂",
-        stringResource(Res.string.home_nav_explore) to "◎",
-        stringResource(Res.string.home_nav_videos) to "▶",
-        stringResource(Res.string.home_nav_profile) to "☺",
-    )
-    val colors = MaterialTheme.colorScheme
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colors.tertiary)
-            .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        items.forEachIndexed { index, (label, icon) ->
-            val selected = index == selectedIndex
-            Column(
-                modifier = Modifier.clickable { onItemSelected(index) },
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = icon,
-                    color = if (selected) colors.primary else colors.onTertiary,
-                    fontSize = 18.sp,
-                )
-                Text(
-                    text = label,
-                    color = if (selected) colors.primary else colors.onTertiary,
-                    fontSize = 10.sp,
-                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                )
-            }
         }
     }
 }
@@ -514,32 +437,49 @@ private fun HomeCategoryLoadingContent(modifier: Modifier = Modifier) {
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+        contentPadding = PaddingValues(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(HeadlineCardAspectRatio)
-                    .clip(RoundedCornerShape(16.dp))
+                    .aspectRatio(HeroAspectRatio)
                     .background(colors.surfaceVariant),
             )
+        }
+
+        item {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                repeat(4) {
+                    Box(
+                        modifier = Modifier
+                            .width(64.dp)
+                            .height(14.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(colors.surfaceVariant),
+                    )
+                }
+            }
         }
 
         items(4) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(14.dp))
                     .background(colors.surface)
-                    .padding(12.dp),
+                    .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier = Modifier
-                        .size(72.dp)
-                        .clip(RoundedCornerShape(10.dp))
+                        .size(52.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(colors.surfaceVariant),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
@@ -556,7 +496,7 @@ private fun HomeCategoryLoadingContent(modifier: Modifier = Modifier) {
                     )
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(0.55f)
+                            .fillMaxWidth(0.45f)
                             .height(12.dp)
                             .clip(RoundedCornerShape(4.dp))
                             .background(colors.surfaceVariant),
@@ -626,8 +566,8 @@ private fun NewsArticleImage(
 private fun headlineScrimBrush(colors: ColorScheme): Brush = Brush.verticalGradient(
     colorStops = arrayOf(
         0.0f to Color.Transparent,
-        0.35f to colors.scrim.copy(alpha = 0.18f),
-        0.65f to colors.scrim.copy(alpha = 0.55f),
+        0.45f to colors.scrim.copy(alpha = 0.2f),
+        0.75f to colors.scrim.copy(alpha = 0.65f),
         1.0f to colors.scrim.copy(alpha = 0.92f),
     ),
 )
