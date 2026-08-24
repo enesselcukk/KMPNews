@@ -1,44 +1,54 @@
 # KMPNews
 
-A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting **Android**, **iOS**, **Desktop (JVM)**, and **Web (Kotlin/Wasm)** from a single shared codebase.
+News client for **SDH — Son Dakika Haber**. One Compose Multiplatform codebase for **Android**, **iOS**, **Desktop**, and **Web**.
 
 ---
 
 ## Screenshots
 
-### Android
+<table>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <img src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" width="240" alt="iOS home screen" />
+      <br /><br />
+      <b>iOS</b>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <img src="https://github.com/user-attachments/assets/d7fadfbb-edd0-4942-8433-083ad97c2b5a" width="240" alt="Android home screen" />
+      <br /><br />
+      <b>Android</b>
+    </td>
+  </tr>
+</table>
 
-<img width="120" height="262" alt="Screenshot_20260813_133010" src="https://github.com/user-attachments/assets/d7fadfbb-edd0-4942-8433-083ad97c2b5a" />
-
-
-### iOS
-
-<img width="120" height="262" alt="Simulator Screenshot - iPhone 17 - 2026-08-13 at 13 14 30" src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" />
-
-
-### Desktop
-
-<img width="1188" height="748" alt="Ekran Resmi 2026-08-13 13 15 51" src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" />
-
-
-### Web
-
-<img width="1024" height="581" alt="Web — home screen" src="docs/screenshots/web.jpg" />
+<table>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <img src="docs/screenshots/web.jpg" alt="Web home screen" />
+      <br /><br />
+      <b>Web</b>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <img src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" alt="Desktop home screen" />
+      <br /><br />
+      <b>Desktop</b>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## Features
 
-- **Multiplatform** — shared UI and business logic for Android, iOS, Desktop, and Web
-- **Category tabs** — `general`, `business`, `entertainment`, `health`, `science`, `sports`, `technology`
-- **Article detail** — hero image, metadata, summary, and full content with back navigation
-- **Headline carousel** — horizontal pager for featured articles on the home screen
-- **Image loading** — remote article images with Coil 3
-- **Material 3 theme** — SDH brand colors (orange / navy), light & dark mode
-- **Localization** — TR / EN string resources via Compose Multiplatform Resources
-- **Modular architecture** — feature-based layers (contract, domain, data, presentation)
-- **Dependency injection** — Koin for platform and feature module registration
-- **Navigation 3** — user-owned back stack, modular `NavEntryProvider`, and ViewModel scoping per destination
+- Shared Compose UI and business logic across Android, iOS, Desktop, and Web
+- Category tabs: general, business, entertainment, health, science, sports, technology
+- Article detail with hero image, metadata, summary, and full content
+- Headline carousel on the home screen
+- Remote images via Coil 3
+- Material 3 theme with SDH brand colors, light and dark mode
+- TR / EN strings through Compose Multiplatform Resources
+- Feature modules (`contract`, `domain`, `data`, `presentation`) with Koin
+- Navigation 3 with a user-owned back stack and per-destination ViewModels
 
 ---
 
