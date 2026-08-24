@@ -35,6 +35,7 @@ plugins {
 include(":app:androidApp")
 include(":app:desktopApp")
 include(":app:iosApp")
+include(":app:webApp")
 include(":app:shared")
 include(":app:ui-components")
 include(":core:model")

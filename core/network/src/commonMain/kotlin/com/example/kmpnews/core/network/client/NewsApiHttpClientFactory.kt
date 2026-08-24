@@ -1,7 +1,6 @@
 package com.example.kmpnews.core.network.client
 
-import com.example.kmpnews.core.network.config.NewsApiConfig.BASE_PATH
-import com.example.kmpnews.core.network.config.NewsApiConfig.HOST
+import com.example.kmpnews.core.network.config.newsApiUrl
 import com.example.kmpnews.core.network.engine.getProvide
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -11,7 +10,6 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
-import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
@@ -53,10 +51,12 @@ object NewsApiHttpClientFactory {
             }
 
             defaultRequest {
+                val endpoint = newsApiUrl()
                 url {
-                    protocol = URLProtocol.HTTPS
-                    host = HOST
-                    encodedPath = BASE_PATH
+                    protocol = endpoint.protocol
+                    host = endpoint.host
+                    endpoint.port?.let { port = it }
+                    encodedPath = endpoint.basePath
                 }
                 contentType(ContentType.Application.Json)
             }

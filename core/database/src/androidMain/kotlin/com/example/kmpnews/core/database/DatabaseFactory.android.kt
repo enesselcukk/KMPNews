@@ -2,6 +2,7 @@ package com.example.kmpnews.core.database
 
 import android.content.Context
 import androidx.room3.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 
 actual class DatabaseFactory(
@@ -11,5 +12,5 @@ actual class DatabaseFactory(
         Room.databaseBuilder<NewsDatabase>(
             context = context.applicationContext,
             name = context.applicationContext.getDatabasePath("kmpnews.db").absolutePath,
-        ).buildNewsDatabase(Dispatchers.IO)
+        ).buildNewsDatabase(BundledSQLiteDriver(), Dispatchers.IO)
 }

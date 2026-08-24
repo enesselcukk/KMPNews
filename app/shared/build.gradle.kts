@@ -32,6 +32,9 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
+        }
         commonMain.dependencies {
             implementation(project(":app:ui-components"))
             implementation(project(":core:model"))

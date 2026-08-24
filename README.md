@@ -1,6 +1,6 @@
 # KMPNews
 
-A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting **Android**, **iOS**, and **Desktop (JVM)** from a single shared codebase.
+A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting **Android**, **iOS**, **Desktop (JVM)**, and **Web (Kotlin/Wasm)** from a single shared codebase.
 
 ---
 
@@ -20,11 +20,16 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 
 <img width="1188" height="748" alt="Ekran Resmi 2026-08-13 13 15 51" src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" />
 
+
+### Web
+
+<img width="1024" height="581" alt="Web — home screen" src="docs/screenshots/web.jpg" />
+
 ---
 
 ## Features
 
-- **Multiplatform** — shared UI and business logic for Android, iOS, and Desktop
+- **Multiplatform** — shared UI and business logic for Android, iOS, Desktop, and Web
 - **Category tabs** — `general`, `business`, `entertainment`, `health`, `science`, `sports`, `technology`
 - **Article detail** — hero image, metadata, summary, and full content with back navigation
 - **Headline carousel** — horizontal pager for featured articles on the home screen
@@ -52,7 +57,7 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 | Data | Room 3, SQLite, Multiplatform Settings |
 | Localization | Compose Resources (`composeResources`) |
 | Build | Gradle **9.x**, AGP **9.0.1**, Convention Plugins (`build-logic`) |
-| Targets | Android (minSdk 24), iOS (Arm64 / Simulator), JVM Desktop |
+| Targets | Android (minSdk 24), iOS (Arm64 / Simulator), JVM Desktop, Web (Wasm GC) |
 
 ---
 
@@ -61,25 +66,25 @@ A **Kotlin Multiplatform** news app for **SDH — Son Dakika Haber**, targeting 
 The app uses a modular structure that separates responsibilities per feature:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  app/androidApp · app/iosApp · app/desktopApp           │
-│                    (platform entry)                      │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-┌──────────────────────────▼──────────────────────────────┐
-│  app/shared          KmpNewsApp, Koin, KmpNewsNavHost     │
-│  app/ui-components   KmpNewsTheme, design system         │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        ▼                  ▼                  ▼
-┌───────────────┐  ┌───────────────┐  ┌───────────────────┐
-│ feature/home  │  │ feature/detail│  │ core/*            │
-│ contract      │  │ contract      │  │ network, domain,  │
-│ domain        │  │ domain        │  │ navigation, db... │
-│ data          │  │ data          │  │                   │
-│ presentation  │  │ presentation  │  │                   │
-└───────────────┘  └───────────────┘  └───────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  app/androidApp · app/iosApp · app/desktopApp · app/webApp   │
+│                       (platform entry)                       │
+└──────────────────────────────┬───────────────────────────────┘
+                               │
+┌──────────────────────────────▼───────────────────────────────┐
+│  app/shared          KmpNewsApp, Koin, KmpNewsNavHost        │
+│  app/ui-components   KmpNewsTheme, design system             │
+└──────────────────────────────┬───────────────────────────────┘
+                               │
+          ┌────────────────────┼────────────────────┐
+          ▼                    ▼                    ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────────┐
+│ feature/home  │    │ feature/detail│    │ core/*            │
+│ contract      │    │ contract      │    │ network, domain,  │
+│ domain        │    │ domain        │    │ navigation, db... │
+│ data          │    │ data          │    │                   │
+│ presentation  │    │ presentation  │    │                   │
+└───────────────┘    └───────────────┘    └───────────────────┘
 ```
 
 **Data flow (Home):**
@@ -106,6 +111,7 @@ KMPNews/
 │   ├── androidApp/       # Android application module
 │   ├── desktopApp/       # Desktop (JVM) application module
 │   ├── iosApp/           # iOS Xcode project + Kotlin bridge
+│   ├── webApp/           # Web (Kotlin/Wasm) application module
 │   ├── shared/           # Shared entry point (KmpNewsApp, Koin)
 │   └── ui-components/    # Theme, typography, shared UI components
 ├── core/
@@ -188,6 +194,26 @@ Build via Gradle:
 ```bash
 ./gradlew :app:shared:embedAndSignAppleFrameworkForXcode
 ```
+
+### Web
+
+Requires a browser with [Wasm GC](https://webassembly.org/features/): Chrome 119+, Firefox 120+, or Safari 18.2+.
+
+```bash
+./gradlew :app:webApp:wasmJsBrowserDevelopmentRun
+```
+
+The app opens at `http://localhost:8080/`. News API calls are proxied through `/news-api` so the browser can talk to News API without CORS errors.
+
+Production artifacts:
+
+```bash
+./gradlew :app:webApp:wasmJsBrowserDistribution
+```
+
+Output: `app/webApp/build/dist/wasmJs/productionExecutable`
+
+The host must serve `.wasm` as `application/wasm` and send COOP/COEP headers (`Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`) so Room can persist to OPFS. Same-origin `/news-api/*` must reverse-proxy to `https://newsapi.org/`. Netlify `_headers` and `_redirects` files are included in the distribution.
 
 ---
 

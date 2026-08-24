@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("kmpnews.library.kmp")
     alias(libs.plugins.ksp)
@@ -5,6 +7,11 @@ plugins {
 }
 
 kotlin {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        useEsModules()
+    }
+
     jvm()
 
     android {
@@ -35,12 +42,28 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core:model"))
             api(libs.room3.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(libs.sqlite)
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
+        }
+        androidMain.dependencies {
+            implementation(libs.sqlite.bundled)
+        }
+        jvmMain.dependencies {
+            implementation(libs.sqlite.bundled)
+        }
+        iosMain.dependencies {
+            implementation(libs.sqlite.bundled)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.sqlite.web)
+            implementation(libs.kotlinx.browser)
+            implementation(
+                npm("sqlite-wasm-worker", layout.projectDirectory.dir("sqlite-wasm-worker").asFile),
+            )
         }
         getByName("androidHostTest") {
             dependencies {
@@ -59,4 +82,5 @@ dependencies {
     add("kspJvm", libs.room3.compiler)
     add("kspIosArm64", libs.room3.compiler)
     add("kspIosSimulatorArm64", libs.room3.compiler)
+    add("kspWasmJs", libs.room3.compiler)
 }
