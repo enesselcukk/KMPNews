@@ -8,9 +8,17 @@ plugins {
 
 dependencies {
     implementation(project(":app:shared"))
+    implementation(project(":app:ui-components"))
+    implementation(project(":core:navigation"))
+    implementation(project(":feature:detail:contract"))
+    implementation(project(":feature:home:presentation"))
+    implementation(project(":feature:detail:presentation"))
 
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlinx.coroutinesSwing)
+    implementation(libs.compose.material3)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.ktor)
 
     implementation(libs.compose.uiToolingPreview)
 }
