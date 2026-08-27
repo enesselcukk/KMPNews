@@ -51,12 +51,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.coil.compose)
         }
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.cio)
-            implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.koin.core)
-            implementation(libs.kotlinx.coroutines.core)
-        }
         iosMain.dependencies {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

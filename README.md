@@ -1,6 +1,6 @@
 # KMPNews
 
-News client for **SDH — Son Dakika Haber**. Shared Kotlin business logic with **native SwiftUI on iOS**, **native Compose Desktop UI on JVM**, and **Compose Multiplatform** on Android and Web.
+News client for **SDH — Son Dakika Haber**. Shared Kotlin business logic with **native SwiftUI on iOS** and **Compose Multiplatform** on Android, Desktop, and Web.
 
 ---
 
@@ -9,7 +9,7 @@ News client for **SDH — Son Dakika Haber**. Shared Kotlin business logic with 
 | Platform | UI | Shared from Kotlin |
 |----------|----|--------------------|
 | **Android** | Jetpack Compose (CMP) | UI + ViewModels + domain/data |
-| **Desktop** | **Compose Desktop** (native JVM UI) | ViewModels + domain/data |
+| **Desktop** | Compose Desktop (CMP) | UI + ViewModels + domain/data |
 | **Web** | Compose Wasm (CMP) | UI + ViewModels + domain/data |
 | **iOS** | **SwiftUI** (native) | ViewModels + domain/data + networking |
 
@@ -26,22 +26,6 @@ app/iosApp/iosApp/
   Features/Detail/   DetailView.swift, DetailViewModelWrapper.swift
   App/               ContentView.swift, AppCoordinator.swift
   DesignSystem/      KMPNewsTheme.swift, RemoteImageView.swift
-```
-
-## Desktop native UI layout
-
-Desktop screens live under `app/desktopApp/src/main/kotlin/com/example/kmpnews/desktop/`. Kotlin JVM bridge code lives in each feature's `presentation/src/jvmMain/`, mirroring the iOS bridge pattern.
-
-```
-feature/home/presentation/src/jvmMain/   → HomeViewModelController, snapshots
-feature/detail/presentation/src/jvmMain/ → DetailViewModelController, snapshots
-
-app/desktopApp/src/main/kotlin/com/example/kmpnews/desktop/
-  features/home/     DesktopHomeScreen.kt, HomeViewModelState.kt
-  features/detail/   DesktopDetailScreen.kt, DetailViewModelState.kt
-  app/               DesktopApp.kt, DesktopCoordinator.kt
-  navigation/        DesktopNavigationBridge.kt
-  designsystem/      RemoteImage.kt
 ```
 
 
@@ -82,8 +66,7 @@ app/desktopApp/src/main/kotlin/com/example/kmpnews/desktop/
 ## Features
 
 - **iOS:** native SwiftUI with shared Kotlin ViewModels
-- **Desktop:** native Compose Desktop UI with shared Kotlin ViewModels
-- Shared Compose UI on Android and Web
+- Shared Compose UI on Android, Desktop, and Web
 - Category tabs: general, business, entertainment, health, science, sports, technology
 - Article detail with hero image, metadata, summary, and full content
 - Headline carousel on the home screen
@@ -121,9 +104,8 @@ The app uses a modular structure that separates responsibilities per feature:
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  app/androidApp · app/iosApp · app/desktopApp · app/webApp   │
-│         Android/Web: shared Compose entry (KmpNewsApp)       │
+│         Android/Desktop/Web: Compose entry                   │
 │         iOS: SwiftUI + IosApp Kotlin framework bridge        │
-│         Desktop: Compose Desktop + JVM bridge controllers    │
 └──────────────────────────────┬───────────────────────────────┘
                                │
 ┌──────────────────────────────▼───────────────────────────────┐
@@ -164,7 +146,7 @@ Each feature registers its own `@Serializable` destinations and screen entries t
 KMPNews/
 ├── app/
 │   ├── androidApp/       # Android application module
-│   ├── desktopApp/       # Desktop (JVM) app + native Compose UI
+│   ├── desktopApp/       # Desktop (JVM) application module
 │   ├── iosApp/           # SwiftUI app + Kotlin bridge (ViewModels, Koin)
 │   ├── webApp/           # Web (Kotlin/Wasm) application module
 │   ├── shared/           # Shared entry point (KmpNewsApp, Koin)
