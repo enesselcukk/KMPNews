@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -55,8 +54,6 @@ import com.example.kmpnews.core.designsystem.component.SearchIconButton
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 import com.example.kmpnews.feature.home.presentation.generated.resources.Res
 import com.example.kmpnews.feature.home.presentation.generated.resources.home_app_title
-import com.example.kmpnews.feature.home.presentation.generated.resources.home_icon_bookmark
-import com.example.kmpnews.feature.home.presentation.generated.resources.home_icon_share
 import com.example.kmpnews.feature.home.presentation.generated.resources.home_empty_news
 import com.example.kmpnews.feature.home.presentation.generated.resources.home_error_generic
 import com.example.kmpnews.feature.home.presentation.generated.resources.home_featured_news
@@ -278,13 +275,12 @@ private fun HomeContent(
             SectionTitle(title = stringResource(Res.string.home_featured_news))
         }
 
-        itemsIndexed(
+        items(
             items = featuredArticles,
-            key = { _, article -> article.url.orEmpty() },
-        ) { index, article ->
+            key = { article -> article.url.orEmpty() },
+        ) { article ->
             FeaturedNewsCard(
                 article = article,
-                showBookmarkAction = index % 2 == 0,
                 onClick = { actions.navigateToDetail(article.url.orEmpty()) },
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
@@ -371,7 +367,6 @@ private fun SectionTitle(title: String) {
 @Composable
 private fun FeaturedNewsCard(
     article: NewsHomeArticleDto,
-    showBookmarkAction: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -418,15 +413,6 @@ private fun FeaturedNewsCard(
                     style = MaterialTheme.typography.labelMedium,
                 )
             }
-
-            Text(
-                text = stringResource(
-                    if (showBookmarkAction) Res.string.home_icon_bookmark else Res.string.home_icon_share,
-                ),
-                fontSize = 18.sp,
-                color = colors.onSurfaceVariant,
-                modifier = Modifier.padding(start = 4.dp),
-            )
         }
     }
 }

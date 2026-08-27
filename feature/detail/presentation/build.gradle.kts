@@ -51,5 +51,9 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.coil.compose)
         }
+        iosMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.coroutines.core)
+        }
     }
 }

@@ -9,10 +9,6 @@
     <string name="home_time_hours_ago">%1$d saat önce</string>
     <string name="home_read_time_minutes">%1$d dk okuma</string>
     <string name="home_error_generic">Bir hata oluştu.</string>
-    <string name="home_action_bookmark">Kaydet</string>
-    <string name="home_action_share">Paylaş</string>
-    <string name="home_icon_bookmark">🔖</string>
-    <string name="home_icon_share">↗</string>
     <string name="category_general">GÜNDEM</string>
     <string name="category_business">EKONOMİ</string>
     <string name="category_entertainment">EĞLENCE</string>

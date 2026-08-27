@@ -1,8 +1,33 @@
 # KMPNews
 
-News client for **SDH — Son Dakika Haber**. One Compose Multiplatform codebase for **Android**, **iOS**, **Desktop**, and **Web**.
+News client for **SDH — Son Dakika Haber**. Shared Kotlin business logic with **native SwiftUI on iOS** and **Compose Multiplatform** on Android, Desktop, and Web.
 
 ---
+
+## Platform UI Strategy
+
+| Platform | UI | Shared from Kotlin |
+|----------|----|--------------------|
+| **Android** | Jetpack Compose (CMP) | UI + ViewModels + domain/data |
+| **Desktop** | Compose Desktop (CMP) | UI + ViewModels + domain/data |
+| **Web** | Compose Wasm (CMP) | UI + ViewModels + domain/data |
+| **iOS** | **SwiftUI** (native) | ViewModels + domain/data + networking |
+
+## iOS native UI layout
+
+SwiftUI screens live under `app/iosApp/iosApp/Features/` (Xcode target). Kotlin iOS bridge code lives in each feature's `presentation/src/iosMain/` and is exported through the `IosApp` framework.
+
+```
+feature/home/presentation/src/iosMain/   → HomeViewModelController, snapshots
+feature/detail/presentation/src/iosMain/ → DetailViewModelController, snapshots
+
+app/iosApp/iosApp/
+  Features/Home/     HomeView.swift, HomeViewModelWrapper.swift
+  Features/Detail/   DetailView.swift, DetailViewModelWrapper.swift
+  App/               ContentView.swift, AppCoordinator.swift
+  DesignSystem/      KMPNewsTheme.swift, RemoteImageView.swift
+```
+
 
 ## Screenshots
 
@@ -40,7 +65,8 @@ News client for **SDH — Son Dakika Haber**. One Compose Multiplatform codebase
 
 ## Features
 
-- Shared Compose UI and business logic across Android, iOS, Desktop, and Web
+- **iOS:** native SwiftUI with shared Kotlin ViewModels
+- Shared Compose UI on Android, Desktop, and Web
 - Category tabs: general, business, entertainment, health, science, sports, technology
 - Article detail with hero image, metadata, summary, and full content
 - Headline carousel on the home screen
@@ -78,7 +104,8 @@ The app uses a modular structure that separates responsibilities per feature:
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  app/androidApp · app/iosApp · app/desktopApp · app/webApp   │
-│                       (platform entry)                       │
+│         Android/Desktop/Web: Compose entry                   │
+│         iOS: SwiftUI + IosApp Kotlin framework bridge        │
 └──────────────────────────────┬───────────────────────────────┘
                                │
 ┌──────────────────────────────▼───────────────────────────────┐
@@ -120,7 +147,7 @@ KMPNews/
 ├── app/
 │   ├── androidApp/       # Android application module
 │   ├── desktopApp/       # Desktop (JVM) application module
-│   ├── iosApp/           # iOS Xcode project + Kotlin bridge
+│   ├── iosApp/           # SwiftUI app + Kotlin bridge (ViewModels, Koin)
 │   ├── webApp/           # Web (Kotlin/Wasm) application module
 │   ├── shared/           # Shared entry point (KmpNewsApp, Koin)
 │   └── ui-components/    # Theme, typography, shared UI components
