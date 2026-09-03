@@ -33,75 +33,61 @@ app/iosApp/iosApp/
 
 ## Screenshots
 
-All images are stored in [`docs/screenshots/`](docs/screenshots/) and use relative paths so they work on GitHub and locally.
+All images live in [`docs/screenshots/`](docs/screenshots/).
 
-### Home
+### Android
 
 <table>
   <tr>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/android-home.jpg" alt="Android home feed with hero article and category tabs" width="220" />
-      <br /><br /><b>Android</b>
+    <td align="center">
+      <img src="docs/screenshots/android-home.jpg" alt="Android home" width="220" />
+      <br /><br /><b>Home</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/ios-home.jpg" alt="iOS home feed with hero article and category tabs" width="220" />
-      <br /><br /><b>iOS</b>
+    <td align="center">
+      <img src="docs/screenshots/android-search.jpg" alt="Android search" width="220" />
+      <br /><br /><b>Search</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/desktop-home.jpg" alt="Desktop home feed with Turkish localization" width="420" />
-      <br /><br /><b>Desktop</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/web-home.png" alt="Web home feed in the browser" width="420" />
-      <br /><br /><b>Web</b>
+    <td align="center">
+      <img src="docs/screenshots/android-detail.png" alt="Android detail" width="220" />
+      <br /><br /><b>Detail</b>
     </td>
   </tr>
 </table>
 
-### Search
-
-Debounced search across headlines with result cards and article navigation.
+### iOS
 
 <table>
   <tr>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/android-search.jpg" alt="Android search results" width="220" />
-      <br /><br /><b>Android</b>
+    <td align="center">
+      <img src="docs/screenshots/ios-home.jpg" alt="iOS home" width="220" />
+      <br /><br /><b>Home</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/ios-search.png" alt="iOS search results" width="220" />
-      <br /><br /><b>iOS</b>
+    <td align="center">
+      <img src="docs/screenshots/ios-search.png" alt="iOS search" width="220" />
+      <br /><br /><b>Search</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/desktop-search.png" alt="Desktop search results" width="420" />
-      <br /><br /><b>Desktop</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/web-search.png" alt="Web search results" width="420" />
-      <br /><br /><b>Web</b>
+    <td align="center">
+      <img src="docs/screenshots/ios-detail.jpg" alt="iOS detail" width="220" />
+      <br /><br /><b>Detail</b>
     </td>
   </tr>
 </table>
 
-### Article detail
+### Web
 
 <table>
   <tr>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/android-detail.png" alt="Android article detail screen" width="220" />
-      <br /><br /><b>Android</b>
+    <td align="center">
+      <img src="docs/screenshots/web-home.png" alt="Web home" width="360" />
+      <br /><br /><b>Home</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/ios-detail.jpg" alt="iOS article detail screen" width="220" />
-      <br /><br /><b>iOS</b>
+    <td align="center">
+      <img src="docs/screenshots/web-search.png" alt="Web search" width="360" />
+      <br /><br /><b>Search</b>
     </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/desktop-detail.jpg" alt="Desktop article detail screen" width="420" />
-      <br /><br /><b>Desktop</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="docs/screenshots/web-detail.jpg" alt="Web article detail screen" width="420" />
-      <br /><br /><b>Web</b>
+    <td align="center">
+      <img src="docs/screenshots/web-detail.jpg" alt="Web detail" width="360" />
+      <br /><br /><b>Detail</b>
     </td>
   </tr>
 </table>
