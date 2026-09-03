@@ -20,43 +20,88 @@ SwiftUI screens live under `app/iosApp/iosApp/Features/` (Xcode target). Kotlin 
 ```
 feature/home/presentation/src/iosMain/   → HomeViewModelController, snapshots
 feature/detail/presentation/src/iosMain/ → DetailViewModelController, snapshots
+feature/search/presentation/src/iosMain/ → SearchViewModelController, snapshots
 
 app/iosApp/iosApp/
   Features/Home/     HomeView.swift, HomeViewModelWrapper.swift
   Features/Detail/   DetailView.swift, DetailViewModelWrapper.swift
-  App/               ContentView.swift, AppCoordinator.swift
+  Features/Search/   SearchView.swift, SearchViewModelWrapper.swift
+  App/               ContentView.swift, AppCoordinator.swift, AppRoute.swift
   DesignSystem/      KMPNewsTheme.swift, RemoteImageView.swift
 ```
 
 
 ## Screenshots
 
+All images are stored in [`docs/screenshots/`](docs/screenshots/) and use relative paths so they work on GitHub and locally.
+
+### Home
+
 <table>
   <tr>
-    <td align="center" valign="top" width="50%">
-      <img src="https://github.com/user-attachments/assets/733d428b-ade6-4092-9728-9060795a9153" width="240" alt="iOS home screen" />
-      <br /><br />
-      <b>iOS</b>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/android-home.jpg" alt="Android home feed with hero article and category tabs" width="220" />
+      <br /><br /><b>Android</b>
     </td>
-    <td align="center" valign="top" width="50%">
-      <img src="https://github.com/user-attachments/assets/d7fadfbb-edd0-4942-8433-083ad97c2b5a" width="240" alt="Android home screen" />
-      <br /><br />
-      <b>Android</b>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/ios-home.jpg" alt="iOS home feed with hero article and category tabs" width="220" />
+      <br /><br /><b>iOS</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/desktop-home.jpg" alt="Desktop home feed with Turkish localization" width="420" />
+      <br /><br /><b>Desktop</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/web-home.png" alt="Web home feed in the browser" width="420" />
+      <br /><br /><b>Web</b>
     </td>
   </tr>
 </table>
 
+### Search
+
+Debounced search across headlines with result cards and article navigation.
+
 <table>
   <tr>
-    <td align="center" valign="top" width="50%">
-      <img src="docs/screenshots/web.jpg" alt="Web home screen" />
-      <br /><br />
-      <b>Web</b>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/android-search.jpg" alt="Android search results" width="220" />
+      <br /><br /><b>Android</b>
     </td>
-    <td align="center" valign="top" width="50%">
-      <img src="https://github.com/user-attachments/assets/6684240e-e13a-4227-8ff6-6d13fd439328" alt="Desktop home screen" />
-      <br /><br />
-      <b>Desktop</b>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/ios-search.png" alt="iOS search results" width="220" />
+      <br /><br /><b>iOS</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/desktop-search.png" alt="Desktop search results" width="420" />
+      <br /><br /><b>Desktop</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/web-search.png" alt="Web search results" width="420" />
+      <br /><br /><b>Web</b>
+    </td>
+  </tr>
+</table>
+
+### Article detail
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/android-detail.png" alt="Android article detail screen" width="220" />
+      <br /><br /><b>Android</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/ios-detail.jpg" alt="iOS article detail screen" width="220" />
+      <br /><br /><b>iOS</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/desktop-detail.jpg" alt="Desktop article detail screen" width="420" />
+      <br /><br /><b>Desktop</b>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/web-detail.jpg" alt="Web article detail screen" width="420" />
+      <br /><br /><b>Web</b>
     </td>
   </tr>
 </table>
@@ -68,6 +113,7 @@ app/iosApp/iosApp/
 - **iOS:** native SwiftUI with shared Kotlin ViewModels
 - Shared Compose UI on Android, Desktop, and Web
 - Category tabs: general, business, entertainment, health, science, sports, technology
+- Debounced news search via News API `/v2/everything`
 - Article detail with hero image, metadata, summary, and full content
 - Headline carousel on the home screen
 - Remote images via Coil 3
@@ -161,7 +207,8 @@ KMPNews/
 │   └── presentation/     # CoreViewModel, shared presentation helpers
 ├── feature/
 │   ├── home/             # Home feed, categories, headlines
-│   └── detail/           # Article detail screen
+│   ├── detail/           # Article detail screen
+│   └── search/           # Debounced article search
 ├── build-logic/          # Gradle convention plugins
 └── docs/screenshots/     # README screenshots
 ```
