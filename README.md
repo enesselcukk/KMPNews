@@ -92,6 +92,25 @@ All images live in [`docs/screenshots/`](docs/screenshots/).
   </tr>
 </table>
 
+### Desktop
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/desktop-home.jpg" alt="Desktop home" width="360" />
+      <br /><br /><b>Home</b>
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/desktop-search.png" alt="Desktop search" width="360" />
+      <br /><br /><b>Search</b>
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/desktop-detail.jpg" alt="Desktop detail" width="360" />
+      <br /><br /><b>Detail</b>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## Features
