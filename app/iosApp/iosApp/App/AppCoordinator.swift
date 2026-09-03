@@ -13,7 +13,12 @@ final class AppCoordinator: ObservableObject {
         let bridge = IosNavigationBridge()
         bridge.onNavigateToDetail = { [weak self] url in
             Task { @MainActor in
-                self?.path.append(url)
+                self?.path.append(AppRoute.detail(url))
+            }
+        }
+        bridge.onNavigateToSearch = { [weak self] in
+            Task { @MainActor in
+                self?.path.append(AppRoute.search)
             }
         }
         bridge.onNavigateUp = { [weak self] in

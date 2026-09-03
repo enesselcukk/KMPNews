@@ -5,6 +5,9 @@ import com.example.kmpnews.core.network.di.newsApiModule
 import com.example.kmpnews.feature.detail.data.di.detailDataModule
 import com.example.kmpnews.feature.detail.domain.di.detailDomainModule
 import com.example.kmpnews.feature.detail.presentation.di.detailPresentationModule
+import com.example.kmpnews.feature.search.data.di.searchDataModule
+import com.example.kmpnews.feature.search.domain.di.searchDomainModule
+import com.example.kmpnews.feature.search.presentation.di.searchPresentationModule
 import com.example.kmpnews.feature.home.data.di.homeDataModule
 import com.example.kmpnews.feature.home.domain.di.homeDomainModule
 import com.example.kmpnews.feature.home.presentation.di.homePresentationModule
@@ -22,6 +25,9 @@ private val sharedModules = listOf(
     detailDataModule,
     detailDomainModule,
     detailPresentationModule,
+    searchDataModule,
+    searchDomainModule,
+    searchPresentationModule,
 )
 
 fun startKoinWithModules(

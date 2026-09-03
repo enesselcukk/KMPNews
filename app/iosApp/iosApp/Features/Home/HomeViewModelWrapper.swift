@@ -42,6 +42,10 @@ final class HomeViewModelWrapper: ObservableObject {
         controller.navigateToDetail(newsId: url)
     }
 
+    func openSearch() {
+        controller.navigateToSearch()
+    }
+
     func retry() {
         controller.retry()
     }

@@ -10,7 +10,7 @@ struct HomeView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HomeTopBar()
+            HomeTopBar(onSearch: viewModel.openSearch)
 
             ZStack(alignment: .top) {
                 if viewModel.snapshot.isError && !hasContent {
@@ -45,6 +45,8 @@ struct HomeView: View {
 }
 
 private struct HomeTopBar: View {
+    let onSearch: () -> Void
+
     var body: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 10)
@@ -67,9 +69,12 @@ private struct HomeTopBar: View {
 
             Spacer()
 
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.white)
+            Button(action: onSearch) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)

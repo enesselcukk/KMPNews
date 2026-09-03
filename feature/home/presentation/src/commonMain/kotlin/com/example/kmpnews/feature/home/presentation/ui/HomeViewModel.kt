@@ -6,6 +6,7 @@ import com.example.kmpnews.core.navigation.NavigationCommand
 import com.example.kmpnews.core.navigation.NavigationManager
 import com.example.kmpnews.core.presentation.CoreViewModel
 import com.example.kmpnews.feature.detail.contract.DetailScreenDestination
+import com.example.kmpnews.feature.search.contract.SearchScreenDestination
 import com.example.kmpnews.feature.home.domain.model.NewsHeadlineCategory
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
 import com.example.kmpnews.feature.home.domain.usecase.HomeNewsUseCase
@@ -129,6 +130,14 @@ class HomeViewModel(
         navigationManager.navigate(
             navigationCommand = NavigationCommand.NavigateTo(
                 to = DetailScreenDestination(newsId = newsId),
+            ),
+        )
+    }
+
+    fun navigateToSearch() {
+        navigationManager.navigate(
+            navigationCommand = NavigationCommand.NavigateTo(
+                to = SearchScreenDestination,
             ),
         )
     }

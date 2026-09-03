@@ -12,6 +12,9 @@ import com.example.kmpnews.feature.detail.presentation.di.detailPresentationModu
 import com.example.kmpnews.feature.home.data.di.homeDataModule
 import com.example.kmpnews.feature.home.domain.di.homeDomainModule
 import com.example.kmpnews.feature.home.presentation.di.homePresentationModule
+import com.example.kmpnews.feature.search.data.di.searchDataModule
+import com.example.kmpnews.feature.search.domain.di.searchDomainModule
+import com.example.kmpnews.feature.search.presentation.di.searchPresentationModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
@@ -38,6 +41,9 @@ fun initAppKoin() {
             detailDataModule,
             detailDomainModule,
             detailPresentationModule,
+            searchDataModule,
+            searchDomainModule,
+            searchPresentationModule,
         )
     }
 }

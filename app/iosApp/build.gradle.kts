@@ -12,6 +12,7 @@ kotlin {
             isStatic = true
             export(project(":feature:home:presentation"))
             export(project(":feature:detail:presentation"))
+            export(project(":feature:search:presentation"))
         }
     }
 
@@ -19,6 +20,7 @@ kotlin {
         iosMain.dependencies {
             api(project(":feature:home:presentation"))
             api(project(":feature:detail:presentation"))
+            api(project(":feature:search:presentation"))
             implementation(project(":core:model"))
             implementation(project(":core:domain"))
             implementation(project(":core:network"))
@@ -32,6 +34,9 @@ kotlin {
             implementation(project(":feature:detail:data"))
             implementation(project(":feature:detail:domain"))
             implementation(project(":feature:detail:contract"))
+            implementation(project(":feature:search:data"))
+            implementation(project(":feature:search:domain"))
+            implementation(project(":feature:search:contract"))
             implementation(libs.koin.core)
             implementation(libs.koin.core.viewmodel)
             implementation(libs.ktor.client.darwin)

@@ -32,6 +32,10 @@ class HomeViewModelController {
         viewModel.navigateToDetail(newsId)
     }
 
+    fun navigateToSearch() {
+        viewModel.navigateToSearch()
+    }
+
     fun retry() {
         viewModel.retry()
     }

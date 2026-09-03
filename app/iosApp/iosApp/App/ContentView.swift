@@ -8,8 +8,13 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $coordinator.path) {
             HomeView(viewModel: homeViewModel)
-                .navigationDestination(for: String.self) { articleUrl in
-                    DetailView(articleUrl: articleUrl)
+                .navigationDestination(for: AppRoute.self) { route in
+                    switch route {
+                    case .search:
+                        SearchView()
+                    case .detail(let articleUrl):
+                        DetailView(articleUrl: articleUrl)
+                    }
                 }
         }
         .onAppear {

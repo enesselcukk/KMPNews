@@ -36,6 +36,7 @@ kotlin {
             implementation(project(":core:navigation"))
             implementation(project(":feature:home:contract"))
             implementation(project(":feature:detail:contract"))
+            implementation(project(":feature:search:contract"))
             implementation(project(":feature:home:domain"))
             implementation(project(":app:ui-components"))
             implementation(libs.compose.runtime)

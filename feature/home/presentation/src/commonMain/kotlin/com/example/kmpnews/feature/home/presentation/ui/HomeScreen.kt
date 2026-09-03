@@ -77,7 +77,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(colors.background),
     ) {
-        HomeTopBar()
+        HomeTopBar(onSearchClick = viewModel::navigateToSearch)
         when (val state = uiState) {
             HomeUiState.Loading -> LoadingIndicator(modifier = Modifier.weight(1f))
             is HomeUiState.Error -> HomeMessage(
@@ -138,7 +138,9 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeTopBar() {
+private fun HomeTopBar(
+    onSearchClick: () -> Unit,
+) {
     val colors = MaterialTheme.colorScheme
 
     Row(
@@ -184,7 +186,7 @@ private fun HomeTopBar() {
         }
 
         SearchIconButton(
-            onClick = { /* TODO: search */ },
+            onClick = onSearchClick,
             contentDescription = stringResource(Res.string.home_search),
             tint = colors.onSecondary,
         )

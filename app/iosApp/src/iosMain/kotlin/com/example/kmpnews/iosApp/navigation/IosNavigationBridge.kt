@@ -3,6 +3,7 @@ package com.example.kmpnews.iosApp.navigation
 import com.example.kmpnews.core.navigation.NavigationCommand
 import com.example.kmpnews.core.navigation.NavigationManager
 import com.example.kmpnews.feature.detail.contract.DetailScreenDestination
+import com.example.kmpnews.feature.search.contract.SearchScreenDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,6 +15,7 @@ import org.koin.mp.KoinPlatform.getKoin
 
 class IosNavigationBridge {
     var onNavigateToDetail: ((String) -> Unit)? = null
+    var onNavigateToSearch: (() -> Unit)? = null
     var onNavigateUp: (() -> Unit)? = null
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -26,9 +28,14 @@ class IosNavigationBridge {
             navigationManager.navigationCommandFlow.collect { command ->
                 when (command) {
                     is NavigationCommand.NavigateTo -> {
-                        val destination = command.to
-                        if (destination is DetailScreenDestination) {
-                            onNavigateToDetail?.invoke(destination.newsId)
+                        when (val destination = command.to) {
+                            is DetailScreenDestination -> {
+                                onNavigateToDetail?.invoke(destination.newsId)
+                            }
+
+                            SearchScreenDestination -> {
+                                onNavigateToSearch?.invoke()
+                            }
                         }
                     }
 
