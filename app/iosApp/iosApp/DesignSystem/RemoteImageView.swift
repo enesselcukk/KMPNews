@@ -76,6 +76,7 @@ struct RemoteImageView: View {
                 ImagePlaceholderView(title: title)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -101,6 +102,8 @@ private struct RemoteImageContent: View {
                 ImagePlaceholderView(title: title)
             }
         }
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+        .clipped()
         .animation(nil, value: loader.image == nil)
     }
 }
@@ -118,5 +121,6 @@ struct ImagePlaceholderView: View {
         ][seed % 4]
 
         LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

@@ -14,6 +14,6 @@ suspend inline fun <reified T : Any> HttpResponse.asRestResult(): RestResult<T> 
             HttpStatusException(
                 statusCode = status.value,
                 message = status.description,
-            ),
+            )
         )
     }

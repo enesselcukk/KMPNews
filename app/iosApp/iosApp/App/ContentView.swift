@@ -19,6 +19,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    let _ = KoinInit_iosKt.doInitAppKoin()
+    let _ = KoinBootstrap.start()
     ContentView()
 }

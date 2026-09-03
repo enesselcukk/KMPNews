@@ -5,9 +5,11 @@ import SwiftUI
 final class HomeViewModelWrapper: ObservableObject {
     @Published private(set) var snapshot: HomeUiStateSnapshot
 
-    private let controller = HomeViewModelController()
+    private let controller: HomeViewModelController
 
     init() {
+        KoinBootstrap.start()
+        controller = HomeViewModelController()
         snapshot = controller.currentSnapshot()
         controller.observe { [weak self] newSnapshot in
             Task { @MainActor in

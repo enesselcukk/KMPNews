@@ -224,32 +224,31 @@ private struct HomeHeroView: View {
             Color.clear
                 .aspectRatio(4 / 3, contentMode: .fit)
                 .overlay {
-                    ZStack(alignment: .bottomLeading) {
-                        RemoteImageView(urlString: article.imageUrl, title: article.title)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    RemoteImageView(urlString: article.imageUrl, title: article.title)
+                }
+                .overlay {
+                    LinearGradient(
+                        colors: [.clear, .black.opacity(0.92)],
+                        startPoint: .center,
+                        endPoint: .bottom,
+                    )
+                }
+                .overlay(alignment: .bottomLeading) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(article.title.uppercased())
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(3)
 
-                        LinearGradient(
-                            colors: [.clear, .black.opacity(0.92)],
-                            startPoint: .center,
-                            endPoint: .bottom,
-                        )
-
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(article.title.uppercased())
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundStyle(.white)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(3)
-
-                            HStack(spacing: 16) {
-                                Text(relativeTime)
-                                Text(readTime)
-                            }
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(KMPNewsTheme.orange)
+                        HStack(spacing: 16) {
+                            Text(relativeTime)
+                            Text(readTime)
                         }
-                        .padding(20)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(KMPNewsTheme.orange)
                     }
+                    .padding(20)
                 }
                 .clipped()
         }

@@ -131,27 +131,24 @@ private struct DetailHeroImage: View {
     let sourceName: String
 
     var body: some View {
-        Color.clear
-            .aspectRatio(16 / 9, contentMode: .fit)
-            .overlay {
-                ZStack(alignment: .bottomLeading) {
-                    RemoteImageView(urlString: imageUrl, title: sourceName)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ZStack(alignment: .bottomLeading) {
+            RemoteImageView(urlString: imageUrl, title: sourceName)
 
-                    LinearGradient(
-                        colors: [.clear, .black.opacity(0.72)],
-                        startPoint: .center,
-                        endPoint: .bottom,
-                    )
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.72)],
+                startPoint: .center,
+                endPoint: .bottom,
+            )
 
-                    Text(sourceName.uppercased())
-                        .font(.system(size: 12, weight: .bold))
-                        .kerning(1)
-                        .foregroundStyle(.white)
-                        .padding(16)
-                }
-            }
-            .clipped()
+            Text(sourceName.uppercased())
+                .font(.system(size: 12, weight: .bold))
+                .kerning(1)
+                .foregroundStyle(.white)
+                .padding(16)
+        }
+        .frame(maxWidth: .infinity)
+        .aspectRatio(16 / 9, contentMode: .fit)
+        .clipped()
     }
 }
 
