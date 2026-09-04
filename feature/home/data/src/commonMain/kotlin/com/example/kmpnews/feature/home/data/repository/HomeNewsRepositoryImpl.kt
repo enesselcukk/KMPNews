@@ -38,14 +38,18 @@ class HomeNewsRepositoryImpl(
                 is RestResult.Error -> result.result
             }
             if (articles != null) {
-                cacheArticles(articles)
+                cacheArticlesInternal(articles)
             }
         }
 
     override fun findCachedArticleByUrl(url: String): NewsHomeArticleDto? =
         articleCache[url]
 
-    private fun cacheArticles(articles: List<NewsHomeArticleDto>) {
+    override fun cacheArticles(articles: List<NewsHomeArticleDto>) {
+        cacheArticlesInternal(articles)
+    }
+
+    private fun cacheArticlesInternal(articles: List<NewsHomeArticleDto>) {
         articles.forEach { article ->
             article.url?.let { articleUrl -> articleCache[articleUrl] = article }
         }

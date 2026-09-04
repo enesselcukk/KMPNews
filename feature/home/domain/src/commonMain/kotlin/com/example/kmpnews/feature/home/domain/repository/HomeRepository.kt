@@ -8,4 +8,6 @@ interface HomeRepository {
     fun getHomeNews(category: String): Flow<RestResult<List<NewsHomeArticleDto>>>
 
     fun findCachedArticleByUrl(url: String): NewsHomeArticleDto?
+
+    fun cacheArticles(articles: List<NewsHomeArticleDto>)
 }

@@ -7,6 +7,7 @@ import com.example.kmpnews.core.navigation.NavigationManager
 import com.example.kmpnews.core.presentation.CoreViewModel
 import com.example.kmpnews.feature.detail.contract.DetailScreenDestination
 import com.example.kmpnews.feature.home.domain.model.NewsHomeArticleDto
+import com.example.kmpnews.feature.home.domain.usecase.CacheHomeArticlesUseCase
 import com.example.kmpnews.feature.search.domain.usecase.SearchArticlesUseCase
 import com.example.kmpnews.feature.search.presentation.ui.SearchUiState.Companion.DEBOUNCE_MS
 import com.example.kmpnews.feature.search.presentation.ui.SearchUiState.Companion.MIN_QUERY_LENGTH
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase,
+    private val cacheHomeArticlesUseCase: CacheHomeArticlesUseCase,
     private val navigationManager: NavigationManager,
 ) : CoreViewModel() {
 
@@ -70,6 +72,7 @@ class SearchViewModel(
 
     fun onResultSelected(articleUrl: String) {
         if (articleUrl.isBlank()) return
+
         navigationManager.navigate(
             navigationCommand = NavigationCommand.NavigateTo(
                 to = DetailScreenDestination(newsId = articleUrl),
@@ -112,19 +115,25 @@ class SearchViewModel(
                             errorMessage = null,
                         )
 
-                        is RestResult.Success -> state.copy(
-                            isLoading = false,
-                            hasSearched = true,
-                            results = result.result.map { it.toSearchResultItem() },
-                            errorMessage = null,
-                        )
+                        is RestResult.Success -> {
+                            cacheHomeArticlesUseCase(result.result)
+                            state.copy(
+                                isLoading = false,
+                                hasSearched = true,
+                                results = result.result.map { it.toSearchResultItem() },
+                                errorMessage = null,
+                            )
+                        }
 
-                        is RestResult.Error -> state.copy(
-                            isLoading = false,
-                            hasSearched = true,
-                            results = result.result?.map { it.toSearchResultItem() }.orEmpty(),
-                            errorMessage = result.error.message,
-                        )
+                        is RestResult.Error -> {
+                            result.result?.let(cacheHomeArticlesUseCase::invoke)
+                            state.copy(
+                                isLoading = false,
+                                hasSearched = true,
+                                results = result.result?.map { it.toSearchResultItem() }.orEmpty(),
+                                errorMessage = result.error.message,
+                            )
+                        }
                     }
                 }
             }
