@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.runTest
 class UserSettingsRepositoryTest {
     @Test
     fun settings_roundTrip() = runTest {
-        val repository = DefaultUserSettingsRepository(MapSettings())
+        val repository = UserSettingsRepositoryImpl(MapSettings())
 
         repository.setThemeMode(ThemeMode.DARK)
         repository.setLanguage("tr")

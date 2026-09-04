@@ -1,6 +1,6 @@
 package com.example.kmpnews.iosApp.di
 
-import com.example.kmpnews.core.datastore.DefaultUserSettingsRepository
+import com.example.kmpnews.core.datastore.UserSettingsRepositoryImpl
 import com.example.kmpnews.core.datastore.UserSettingsRepository
 import com.example.kmpnews.core.database.DatabaseFactory
 import com.example.kmpnews.core.database.NewsDatabase
@@ -24,7 +24,7 @@ private val iosPlatformModule = module {
         DatabaseFactory().createDatabase()
     }
     single { get<NewsDatabase>().homeHeadlineDao() }
-    single<UserSettingsRepository> { DefaultUserSettingsRepository() }
+    single<UserSettingsRepository> { UserSettingsRepositoryImpl() }
 }
 
 fun initAppKoin() {
